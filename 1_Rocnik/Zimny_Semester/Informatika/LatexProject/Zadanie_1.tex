@@ -1,9 +1,115 @@
-\documentclass[12pt]{article}
-\title{Untitled Document}
-\author{Your Name}
-\date{\today}
+\documentclass{article}
+\title{Uvod do informatiky\\
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+  Individualny projekt 1.
+  \\\LaTeX{} \\
+  Tema:
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+\bigbreak
+}
+\author{Ing. Juraj Stefanovic  \\
+	PEVS Fakulta informatiky  \\
+	\and
+	Jan Ondis \\
+	PEVS Fakulta informatiky \\
+	}
 
+\date{\today
+}
+% Hint: \title{what ever}, \author{who care} and \date{when ever} could stand
+% before or after the \begin{document} command
+% BUT the \maketitle command MUST come AFTER the \begin{document} command!
 \begin{document}
+
 \maketitle
+
+\section{Ako funguje kvantovy pocitac}\bigbreak
+Klasicke pocitace, koduju informacie v binarnych ,,bitoch", ktore mozu mat hodnotu 0 s alebo 1 s. V kvantovom pocitaci je zakladnou jednotkou pamate kvantovy bit alebo qubit.
+\bigbreak
+Prvy napad kvantoveho pocitaca bolo pridanie tretieho stavu pomocou magnetu, kde magnet moze mat az tri stavy - pozitivny, negativny alebo ziaden. Neskor si ale ludia uvedomily, ze meranie udajov moze byt v akejkolvek forme. Dnes sa qubity sa vyrabaju pomocou fyzikalnych systemov, ako je spin elektronu alebo orientacia fotonu. Tieto systemy mozu byt v mnohych roznych usporiadaniach naraz, co je vlastnost znama ako kvantova superpozicia. Qubity mozu byt tiez neoddelitelne spojene pomocou javu nazyvaneho kvantove previazanie, kde 2 atomy vedia o sebe instantne, bez ohladu na ich poziciu vo vesmire. Takto vieme informacie prenasat a nie vysielat.
+\bigbreak
+Napriklad osem bitov staci na to, aby klasicky pocitac reprezentoval akekolvek cislo medzi 0 a 255. Ale osem qubitov staci na to, aby kvantovy pocitac reprezentoval kazde cislo medzi 0 a 255 sucasne. Niekolko stoviek zapletenych qubitov by stacilo na to, aby predstavovali viac cisel, ako je atomov vo vesmire.
+
+
+\section{Introduction}
+Make it possible for all to write documents with
+
+\begin{abstract}
+Short introduction to subject of the paper \ldots
+\end{abstract}
+
+\paragraph{Outline}
+First we start with a little example of the article class, which is an
+important documentclass. But there would be other documentclasses like
+book \ref{book}, report \ref{report} and letter \ref{letter} which are
+described in Section \ref{documentclasses}. Finally, Section
+\ref{conclusions} gives the conclusions.
+
+
+
+\section{Documentclasses} \label{documentclasses}
+
+\begin{itemize}
+\item article
+\item book
+\item report
+\item letter
+\end{itemize}
+
+
+\begin{enumerate}
+\item article
+\item book
+\item report
+\item letter
+\end{enumerate}
+
+\begin{description}
+\item[article\label{article}]{Article is \ldots}
+\item[book\label{book}]{The book class \ldots}
+\item[report\label{report}]{Report gives you \ldots}
+\item[letter\label{letter}]{If you want to write a letter.}
+\end{description}
+
+
+\section{Conclusions}\label{conclusions}
+There is no longer \LaTeX{} example which was written by \cite{doe}.
+
+
+\begin{thebibliography}{9}
+\bibitem[Doe]{doe} \emph{First and last \LaTeX{} example.},
+John Doe 50 B.C.
+\end{thebibliography}
 
 \end{document}
