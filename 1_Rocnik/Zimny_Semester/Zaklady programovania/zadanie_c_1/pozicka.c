@@ -39,5 +39,8 @@ int main( ) {
         printf( "And it's NOT digit only\n");
     }
 
+    //
+    printf("This is the final result %.2f\n", atof(userInput));
+
     return 0;
 }
