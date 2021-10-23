@@ -13,10 +13,8 @@ char *getUsersInput()
 }
 
 int main( ) {
-
     char *userInput;
-
-    str_two = getUsersInput();
+    userInput = getUsersInput();
 
     printf( "\nYou entered: %s \n", userInput);
 
