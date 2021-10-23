@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char *substring()
+char *getUsersInput()
 {
     char *ch1;
     ch1=malloc(sizeof(char));
@@ -14,15 +14,11 @@ char *substring()
 
 int main( ) {
 
-   char str[100];
-   char *str_two;
+    char *userInput;
 
-   //printf( "Enter a value :");
-   //scanf("%s", str);
+    str_two = getUsersInput();
 
-    str_two = substring();
+    printf( "\nYou entered: %s \n", userInput);
 
-   printf( "\nYou entered: %s ", str_two);
-
-   return 0;
+    return 0;
 }
