@@ -8,7 +8,7 @@ char *getUsersInput()
     char *ch1;
     ch1=malloc(sizeof(char));
 
-    printf( "Enter a value :");
+    printf( "Zadaj sumu, ktorú si chceš požičať:");
     scanf("%s", ch1);
 
     return ch1;
@@ -27,20 +27,33 @@ int isDigitOnly(const char *s)
     return 1;
 }
 
+float getFirstPayment(float num){
+    if(num < 20000){
+        return (num / 100);
+    }else if(num < 50000){
+        return (((num / 100) * 2) + 200);
+    }else if(num <= 150000){
+        return (((num / 100) * 3) + 800);
+    }else{
+        return -1;
+    }
+}
+
 int main( ) {
     char *userInput;
     userInput = getUsersInput();
 
-    printf( "\nYou entered: %s \n\n", userInput);
-
     if(isDigitOnly(userInput)){
-        printf( "And it's digit only\n");
+        float userInputNumber = atof(userInput);
+        float payment = getFirstPayment(atof(userInput));
+
+        if(payment > 0){
+            printf("Pri schválení pôžičky na %.2f EUR je potrebné zaplatiť prvú splátku: %.2f EUR.\n", userInputNumber, payment);
+        }
+
     }else{
         printf( "And it's NOT digit only\n");
     }
-
-    //
-    printf("This is the final result %.2f\n", atof(userInput));
 
     return 0;
 }
