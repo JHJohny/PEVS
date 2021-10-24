@@ -116,8 +116,9 @@ int intToStr(int x, char str[], int d, int doPadding)
 
 	reverse(str, i);
 	//str[i] = '\0';
+    printf("--This is str after reverse function %s \n", str);
 
-	return i;
+	return strlen(str);
 }
 
 void ftoa(double n, char* res, int afterpoint)
@@ -127,10 +128,11 @@ void ftoa(double n, char* res, int afterpoint)
 	printf("This is ipart %d \n", ipart);
 
 	// Extract floating part
-	float fpart = n - (float)ipart;
+	double fpart = n - (double)ipart;
 
 	// convert integer part to string
 	int i = intToStr(ipart, res, 0, 1);
+    printf("This is res NOW %s \n", res);
 
 	// check for display option after point
 	if (afterpoint != 0) {
