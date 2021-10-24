@@ -67,6 +67,7 @@ char *formatPayment(float num){
 ////////////
 void reverse(char* str, int len)
 {
+    printf("This is input reverse --%s-- \n", str);
 	int i = 0, j = strlen(str) - 1, temp;
 	while (i < j) {
 		temp = str[i];
@@ -75,6 +76,7 @@ void reverse(char* str, int len)
 		i++;
 		j--;
 	}
+	printf("This is OUTPUT reverse --%s-- \n", str);
 }
 
 int intToStr(int x, char str[], int d, int doPadding)
@@ -89,7 +91,7 @@ int intToStr(int x, char str[], int d, int doPadding)
 		str[i++] = '0';
 
 
-    int paddedStringLength = ((strlen(str) - (strlen(str) % 3)) / 3) + strlen(str);
+    int paddedStringLength = 500; //(((strlen(str) - (strlen(str) % 3)) / 3) + strlen(str)) - 1;
     char paddedString[paddedStringLength];
     int extraIndex = 0;
 
@@ -97,27 +99,32 @@ int intToStr(int x, char str[], int d, int doPadding)
         for(int j = 0; j < strlen(str); j++){
             paddedString[j+extraIndex] = str[j];
 
-            if(j % 2 == 0 && j > 0){
+            if(j % 3 == 0 && j > 0){
                 extraIndex++;
                 paddedString[j+extraIndex] = ' ';
             }
         }
 
         printf("This is my padded string %s \n", paddedString);
-    }
 
-    reverse(paddedString, paddedStringLength);
-    printf("This is reversed padded string %s \n", paddedString);
+        for(int k = 0; k < strlen(paddedString); k++){
+            str[k] = paddedString[k];
+        }
+    }
+    printf("This is str %s \n", str);
+
 
 	reverse(str, i);
-	str[i] = '\0';
+	//str[i] = '\0';
+
 	return i;
 }
 
-void ftoa(float n, char* res, int afterpoint)
+void ftoa(double n, char* res, int afterpoint)
 {
 	// Extract integer part
 	int ipart = (int)n;
+	printf("This is ipart %d \n", ipart);
 
 	// Extract floating part
 	float fpart = n - (float)ipart;
@@ -145,8 +152,8 @@ void ftoa(float n, char* res, int afterpoint)
 
 
 int main( ) {
-	char res[20];
-	float n = 13413.2453465;
+	char res[50];
+	double n = 13412310.24;
 	ftoa(n, res, 2);
 	printf("This is output %s\n", res);
 return 0;
