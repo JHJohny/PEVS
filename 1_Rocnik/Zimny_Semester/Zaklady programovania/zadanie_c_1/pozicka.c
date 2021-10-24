@@ -6,6 +6,27 @@
 
 char *getUsersInput()
 {
+    /*
+    This function ask user for an input
+
+    Function uses a string parameter and allocate memory for it by calling a function malloc.
+    For reading user input uses a scanf function.
+
+    #Parameters
+    ------------
+    NONE
+    ------------
+
+    #Returns
+    ------------
+    *char
+        Users input is stored in this variable.
+
+    #Examples
+    ------------
+    >150000
+    >10000.00
+    */
     char *ch1;
     ch1=malloc(sizeof(char));
 
