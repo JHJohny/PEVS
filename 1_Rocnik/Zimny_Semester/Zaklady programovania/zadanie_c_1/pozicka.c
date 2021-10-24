@@ -99,7 +99,7 @@ int intToStr(int x, char str[], int d, int doPadding)
         for(int j = 0; j < strlen(str); j++){
             paddedString[j+extraIndex] = str[j];
 
-            if(j % 3 == 0 && j > 0){
+            if((j+1) % 3 == 0 && j > 0){
                 extraIndex++;
                 paddedString[j+extraIndex] = ' ';
             }
@@ -155,7 +155,7 @@ void ftoa(double n, char* res, int afterpoint)
 
 int main( ) {
 	char res[50];
-	double n = 13412310.24;
+	double n = 1341352350.235245;
 	ftoa(n, res, 2);
 	printf("This is output %s\n", res);
 return 0;
