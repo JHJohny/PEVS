@@ -40,7 +40,7 @@ int isDigitOnly(const char *s)
     return 1;
 }
 
-float getFirstPayment(float num){
+double getFirstPayment(double num){
     if(num < 20000){
         return (num / 100);
     }else if(num < 50000){
@@ -89,7 +89,7 @@ int intToStr(int x, char str[], int d, int doPadding)
 	while (i < d)
 		str[i++] = '0';
 
-    int paddedStringLength = 500; //(((strlen(str) - (strlen(str) % 3)) / 3) + strlen(str)) - 1;
+    int paddedStringLength = 500;
     char paddedString[paddedStringLength];
     int extraIndex = 0;
 
@@ -152,11 +152,11 @@ return 0;
         if(payment > 0){
             printf("Pri schválení pôžičky na %s EUR je potrebné zaplatiť prvú splátku: %s EUR.\n", formattedLoan, formattedPayment);
         }else{
-            printf("Banka neschvaluje pôžičky nad %s EUR", formattedLoan);
+            printf("Banka neschvaluje pôžičky nad 150 000 EUR\n");
         }
 
     }else{
-        printf( "And it's NOT digit only\n");
+        printf("Nespravna suma, prosim zadaj sumu v spravnom tvare.\n");
     }
 
     return 0;
