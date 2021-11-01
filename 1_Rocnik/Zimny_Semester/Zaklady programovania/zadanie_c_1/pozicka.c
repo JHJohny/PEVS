@@ -11,21 +11,6 @@ char *getUsersInput()
 
     Function uses a string parameter and allocate memory for it by calling a function malloc.
     For reading user input uses a scanf function.
-
-    #Parameters
-    ------------
-    NONE
-    ------------
-
-    #Returns
-    ------------
-    *char
-        Users input is stored in this variable.
-
-    #Examples
-    ------------
-    >150000
-    >10000.00
     */
     char *ch1;
     ch1=malloc(sizeof(char));
@@ -43,18 +28,6 @@ int isDigitOnly(const char *s)
 
     This function if the string that is parsed to the function, contains only a numbers.
     Docstring tolerate a decimal points as a "." OR ",".
-    #Parameters
-    ------------
-    *s : char
-        string that is suppose to be checked
-    ------------
-
-    #Returns
-    ------------
-    int
-        1 or 0 based on the result. 0 stands for false, 1 stands for true.
-    #Examples
-    ------------
     */
     for (int i = 0; i < strlen(s); i++) {
         if(isdigit(s[i]) == 0){
@@ -84,29 +57,17 @@ char *formatPayment(float num){
     convertedFloat=malloc(sizeof(char));
     sprintf(convertedFloat, "%.2f", num);
 
-    printf("This is converted float %s\n\n\n", convertedFloat);
-
     char formattedString[1000];
     for(int i = 0; i < strlen(convertedFloat); i++){
         int reversedIndex = (strlen(convertedFloat) - 1) - i;
         formattedString[reversedIndex] = convertedFloat[i];
     }
-    /*
-    for(int i = (strlen(convertedFloat)) - 1; i >= 0; i--){
-        int reverseIndex = (strlen(convertedFloat) - i);
-        formattedString[reverseIndex] = convertedFloat[i];
-    }*/
-
-    printf("This is formatted string %s\n", formattedString);
 
     return convertedFloat;
 }
 
-
-////////////
 void reverse(char* str, int len)
 {
-    printf("This is input reverse --%s-- \n", str);
 	int i = 0, j = strlen(str) - 1, temp;
 	while (i < j) {
 		temp = str[i];
@@ -115,7 +76,6 @@ void reverse(char* str, int len)
 		i++;
 		j--;
 	}
-	printf("This is OUTPUT reverse --%s-- \n", str);
 }
 
 int intToStr(int x, char str[], int d, int doPadding)
@@ -144,18 +104,12 @@ int intToStr(int x, char str[], int d, int doPadding)
             }
         }
 
-        printf("This is my padded string %s \n", paddedString);
-
         for(int k = 0; k < strlen(paddedString); k++){
             str[k] = paddedString[k];
         }
     }
-    printf("This is str %s \n", str);
-
 
 	reverse(str, i);
-	//str[i] = '\0';
-    printf("--This is str after reverse function %s \n", str);
 
 	return strlen(str);
 }
@@ -164,14 +118,12 @@ void ftoa(double n, char* res, int afterpoint)
 {
 	// Extract integer part
 	int ipart = (int)n;
-	printf("This is ipart %d \n", ipart);
 
 	// Extract floating part
 	double fpart = n - (double)ipart;
 
 	// convert integer part to string
 	int i = intToStr(ipart, res, 0, 1);
-    printf("This is res NOW %s \n", res);
 
 	// check for display option after point
 	if (afterpoint != 0) {
@@ -186,13 +138,8 @@ void ftoa(double n, char* res, int afterpoint)
 	}
 }
 
-// Driver program to test above function
-///////////
-
-
-
-
 int main( ) {
+
 	char res[50];
 	double n = 1341352350.235245;
 	ftoa(n, res, 2);
