@@ -29,9 +29,13 @@ int main( ){
 
     //Checking if file exists
     if(!doesFileExist(userInput)){
+        printf("Subor najdeny - OK\n");
+    }else{
         printf("Subor neexistuje!\n");
         return 0;
     }
+
+
 
     return 0;
 }
