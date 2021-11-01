@@ -89,7 +89,6 @@ int intToStr(int x, char str[], int d, int doPadding)
 	while (i < d)
 		str[i++] = '0';
 
-
     int paddedStringLength = 500; //(((strlen(str) - (strlen(str) % 3)) / 3) + strlen(str)) - 1;
     char paddedString[paddedStringLength];
     int extraIndex = 0;
@@ -114,24 +113,15 @@ int intToStr(int x, char str[], int d, int doPadding)
 	return strlen(str);
 }
 
-void ftoa(double n, char* res, int afterpoint)
+void floatToString(double n, char* res, int afterpoint)
 {
-	// Extract integer part
 	int ipart = (int)n;
-
-	// Extract floating part
 	double fpart = n - (double)ipart;
-
-	// convert integer part to string
 	int i = intToStr(ipart, res, 0, 1);
 
-	// check for display option after point
 	if (afterpoint != 0) {
-		res[i] = ','; // add dot
+		res[i] = ',';
 
-		// Get the value of fraction part upto given no.
-		// of points after dot. The third parameter
-		// is needed to handle cases like 233.007
 		fpart = fpart * pow(10, afterpoint);
 
 		intToStr((int)fpart, res + i + 1, afterpoint, 0);
@@ -139,25 +129,30 @@ void ftoa(double n, char* res, int afterpoint)
 }
 
 int main( ) {
-
+/*
 	char res[50];
 	double n = 1341352350.235245;
-	ftoa(n, res, 2);
+	floatToString(n, res, 2);
 	printf("This is output %s\n", res);
 return 0;
-
-formatPayment(1243134.1332);
-return 0;
-
+*/
     char *userInput;
     userInput = getUsersInput();
 
     if(isDigitOnly(userInput)){
-        float userInputNumber = atof(userInput);
-        float payment = getFirstPayment(atof(userInput));
+        double userInputNumber = strtod(userInput, NULL);
+        double payment = getFirstPayment(userInputNumber);
+
+        char formattedLoan[50];
+        floatToString(userInputNumber, formattedLoan, 2);
+
+        char formattedPayment[50];
+        floatToString(payment, formattedPayment, 2);
 
         if(payment > 0){
-            printf("Pri schválení pôžičky na %.2f EUR je potrebné zaplatiť prvú splátku: %.2f EUR.\n", userInputNumber, payment);
+            printf("Pri schválení pôžičky na %s EUR je potrebné zaplatiť prvú splátku: %s EUR.\n", formattedLoan, formattedPayment);
+        }else{
+            printf("Banka neschvaluje pôžičky nad %s EUR", formattedLoan);
         }
 
     }else{
