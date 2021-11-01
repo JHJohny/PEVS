@@ -38,6 +38,24 @@ char *getUsersInput()
 
 int isDigitOnly(const char *s)
 {
+    /*
+    This function check if input parameter is digit only.
+
+    This function if the string that is parsed to the function, contains only a numbers.
+    Docstring tolerate a decimal points as a "." OR ",".
+    #Parameters
+    ------------
+    *s : char
+        string that is suppose to be checked
+    ------------
+
+    #Returns
+    ------------
+    int
+        1 or 0 based on the result. 0 stands for false, 1 stands for true.
+    #Examples
+    ------------
+    */
     for (int i = 0; i < strlen(s); i++) {
         if(isdigit(s[i]) == 0){
             if(!(s[i] == '.' || s[i] == ',')){
