@@ -41,6 +41,11 @@ int isDigitOnly(const char *s)
 }
 
 double getFirstPayment(double num){
+/*
+This function return of payment based on 'Zadanie' and loan.
+
+Function return the price of payment as a double value. If the loan is higher than 150K it return negative 1.
+*/
     if(num < 20000){
         return (num / 100);
     }else if(num < 50000){
@@ -54,6 +59,11 @@ double getFirstPayment(double num){
 
 void reverse(char* str)
 {
+/*
+This function reverse string.
+
+This function reverse the string, without returning it as a another variable.
+*/
 	int i = 0, j = strlen(str) - 1, temp;
 	while (i < j) {
 		temp = str[i];
@@ -66,6 +76,11 @@ void reverse(char* str)
 
 int intToStr(int x, char str[], int d, int doPadding)
 {
+/*
+This function convert int to string.
+
+This function convert int value to string value.
+*/
 	int i = 0;
 	while (x) {
 		str[i++] = (x % 10) + '0';
@@ -103,6 +118,12 @@ int intToStr(int x, char str[], int d, int doPadding)
 
 void floatToString(double n, char* res, int afterpoint)
 {
+/*
+Convert float number to string.
+
+Function convert first numbers up to decimal point first, after that converts number after a decimal point. This function
+also do padding (formatting) + convert decimal dot to decimal comma.
+*/
 	int ipart = (int)n;
 	double fpart = n - (double)ipart;
 	int i = intToStr(ipart, res, 0, 1);
