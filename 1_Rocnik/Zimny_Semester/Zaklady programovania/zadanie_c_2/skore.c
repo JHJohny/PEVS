@@ -27,10 +27,10 @@ int main( ){
     char *userInput;
     userInput = getUsersInput("Prosim zadaj absolutnu cestu k suboru (Stlac enter, ak subor sa nachadza tam, kde je skore.c subor): ", "./dataf_1.txt");
 
-    if(doesFileExist(userInput)){
-        printf("Yay it works!\n");
-    }else{
-        printf("It doesn't work!\n");
+    //Checking if file exists
+    if(!doesFileExist(userInput)){
+        printf("Subor neexistuje!\n");
+        return 0;
     }
 
     return 0;
