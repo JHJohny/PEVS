@@ -52,21 +52,7 @@ double getFirstPayment(double num){
     }
 }
 
-char *formatPayment(float num){
-    char *convertedFloat;
-    convertedFloat=malloc(sizeof(char));
-    sprintf(convertedFloat, "%.2f", num);
-
-    char formattedString[1000];
-    for(int i = 0; i < strlen(convertedFloat); i++){
-        int reversedIndex = (strlen(convertedFloat) - 1) - i;
-        formattedString[reversedIndex] = convertedFloat[i];
-    }
-
-    return convertedFloat;
-}
-
-void reverse(char* str, int len)
+void reverse(char* str)
 {
 	int i = 0, j = strlen(str) - 1, temp;
 	while (i < j) {
@@ -89,6 +75,8 @@ int intToStr(int x, char str[], int d, int doPadding)
 	while (i < d)
 		str[i++] = '0';
 
+    str[i] = '\0';
+
     int paddedStringLength = 500;
     char paddedString[paddedStringLength];
     int extraIndex = 0;
@@ -108,7 +96,7 @@ int intToStr(int x, char str[], int d, int doPadding)
         }
     }
 
-	reverse(str, i);
+	reverse(str);
 
 	return strlen(str);
 }
@@ -129,13 +117,6 @@ void floatToString(double n, char* res, int afterpoint)
 }
 
 int main( ) {
-/*
-	char res[50];
-	double n = 1341352350.235245;
-	floatToString(n, res, 2);
-	printf("This is output %s\n", res);
-return 0;
-*/
     char *userInput;
     userInput = getUsersInput();
 
@@ -154,7 +135,6 @@ return 0;
         }else{
             printf("Banka neschvaluje pôžičky nad 150 000 EUR\n");
         }
-
     }else{
         printf("Nespravna suma, prosim zadaj sumu v spravnom tvare.\n");
     }
