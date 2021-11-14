@@ -29,8 +29,6 @@ int isDigitOnly(const char *s)
     This function if the string that is parsed to the function, contains only a numbers.
     Docstring tolerate a decimal points as a "." OR ",".
     */
-
-    //Looping trough digits and finding out if it's digit only - cycle respect dot and comma as a number (for float variables)
     for (int i = 0; i < strlen(s); i++) {
         if(isdigit(s[i]) == 0){
             if(!(s[i] == '.' || s[i] == ',')){
@@ -48,7 +46,6 @@ This function return of payment based on 'Zadanie' and loan.
 
 Function return the price of payment as a double value. If the loan is higher than 150K it return negative 1.
 */
-    // The logic is from the 'zadanie' self-explanatory
     if(num < 20000){
         return (num / 100);
     }else if(num < 50000){
@@ -85,7 +82,7 @@ This function convert int to string.
 This function convert int value to string value.
 */
 	int i = 0;
-	while (x) { //Filling up the allocated memory
+	while (x) {
 		str[i++] = (x % 10) + '0';
 		x = x / 10;
 	}
@@ -93,13 +90,13 @@ This function convert int value to string value.
 	while (i < d)
 		str[i++] = '0';
 
-    str[i] = '\0'; //Otherwise this part of allocated memory wouldn't be overwritten.
+    str[i] = '\0';
 
     int paddedStringLength = 500;
     char paddedString[paddedStringLength];
     int extraIndex = 0;
 
-    if(doPadding){ //Padding - like adding space /s each 3 digits
+    if(doPadding){
         for(int j = 0; j < strlen(str); j++){
             paddedString[j+extraIndex] = str[j];
 
@@ -145,14 +142,14 @@ int main( ) {
     userInput = getUsersInput();
 
     if(isDigitOnly(userInput)){
-        double userInputNumber = strtod(userInput, NULL); //Convert string entered by user as a number - double. Float wouldn't cover the whole range of possible loans.
-        double payment = getFirstPayment(userInputNumber); //Calculate payment
+        double userInputNumber = strtod(userInput, NULL);
+        double payment = getFirstPayment(userInputNumber);
 
         char formattedLoan[50];
-        floatToString(userInputNumber, formattedLoan, 2); //Format value entered by user
+        floatToString(userInputNumber, formattedLoan, 2);
 
         char formattedPayment[50];
-        floatToString(payment, formattedPayment, 2); //Format number calculated by a function
+        floatToString(payment, formattedPayment, 2);
 
         if(payment > 0){
             printf("Pri schválení pôžičky na %s EUR je potrebné zaplatiť prvú splátku: %s EUR.\n", formattedLoan, formattedPayment);
