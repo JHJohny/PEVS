@@ -87,7 +87,7 @@ void stav_vytah_dorazil_do_ciela() {
     printf("=====================================\n");
     printf("|                                   |\n");
     printf("|       Vytah dorazil do ciela      |\n");
-    printf("|             Zastavuje             |\n");
+    printf("|                                   |\n");
     printf("|                                   |\n");
     printf("====================================\n");
 
@@ -148,12 +148,14 @@ void kontrola_stavov() {
 
         case vytah_dorazil_do_ciela:
             stav_vytah_dorazil_do_ciela();
-            moj_stav=stojim_vo_vytahu; //Zmena stavu
+            moj_stav=stojim_pred_dverami; //Zmena stavu
             break;
         }
 }
 
 int main() {
+    moj_stav=stojim_pred_dverami;
+
     while(1){
         kontrola_stavov();
     }
