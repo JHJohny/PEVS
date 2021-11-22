@@ -37,15 +37,20 @@ int isDigitOnly(const char *s)
     return 1;
 }
 
+
+
 int main() {
     int selected_year;
     int selected_starting_day;
+
+    int months_days_number[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};;
+    char *months_names[13] = {"empty", "Januar", "Februar", "Marec", "April", "Maj", "Jun", "Jul", "August", "September", "Oktober", "November", "December"};
 
     //Handle proper year entering
     while(1) {
         char* entered_year = getUsersInput("Zadaj rok, pre ktorý chceš kalendár?");
 
-        //Handle if it's digit only input
+        //Handle if it's digit only input and non-negative number
         if(isDigitOnly(entered_year) && atoi(entered_year) > 0) {
             selected_year=atoi(entered_year);
             break;
@@ -67,6 +72,11 @@ int main() {
 
         //If one of conditions above were not met - we need to ask user for input again
         printf("---Prepac, den si zadal nespravne, prosim opakuj.\n\n");
+    }
+
+    //Gap year
+    if(selected_year % 4 == 0) {
+        months_days_number[2] = 29;
     }
 
     return 0;
