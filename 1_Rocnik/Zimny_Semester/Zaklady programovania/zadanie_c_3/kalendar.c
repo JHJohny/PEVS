@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 char *getUsersInput(char* askingSentence)
 {
@@ -28,9 +30,7 @@ int isDigitOnly(const char *s)
     */
     for (int i = 0; i < strlen(s); i++) {
         if(isdigit(s[i]) == 0){
-            if(!(s[i] == '.' || s[i] == ',')){
-                return 0;
-            }
+            return 0;
         }
     }
 
@@ -45,32 +45,29 @@ int main() {
     while(1) {
         char* entered_year = getUsersInput("Zadaj rok, pre ktorý chceš kalendár?");
 
-        if(isDigitOnly(entered_year)) {
+        //Handle if it's digit only input
+        if(isDigitOnly(entered_year) && atoi(entered_year) > 0) {
             selected_year=atoi(entered_year);
             break;
-        }else {
-            printf("Prepac, rok si zadal nespravne, prosim opakuj.");
-            continue;
         }
+
+        //If one of conditions above were not met - we need to ask user for input again
+        printf("---Prepac, rok si zadal nespravne, prosim opakuj.\n\n");
     }
 
     //Handle proper day entering
     while(1) {
         char* entered_start_day = getUsersInput("Na ktorý deň padne prvý január v tomto roku?");
 
-        if(isDigitOnly(entered_start_day)) {
+        //Handle if it's digit only input and in range of week
+        if(isDigitOnly(entered_start_day) && atoi(entered_start_day) >= 1 && atoi(entered_start_day) <= 7) {
             selected_starting_day=atoi(entered_start_day);
-        }else {
-            printf("Prepac, den si zadal nespravne, prosim opakuj.");
-            continue;
+            break;
         }
-    }
 
-    if(!isDigitOnly(entered_year) || !isDigitOnly(entered_start_day)) {
-        printf
+        //If one of conditions above were not met - we need to ask user for input again
+        printf("---Prepac, den si zadal nespravne, prosim opakuj.\n\n");
     }
-
-    printf("%s\n", entered_year);
 
     return 0;
 }
