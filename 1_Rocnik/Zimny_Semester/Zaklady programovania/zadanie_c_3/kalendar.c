@@ -26,7 +26,7 @@ int isDigitOnly(const char *s)
     This function check if input parameter is digit only.
 
     This function if the string that is parsed to the function, contains only a numbers.
-    Docstring tolerate a decimal points as a "." OR ",".
+    Function doesn't tolerate float or double numbers!
     */
     for (int i = 0; i < strlen(s); i++) {
         if(isdigit(s[i]) == 0){
