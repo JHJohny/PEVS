@@ -1,16 +1,12 @@
 #include <stdio.h>
 
-void readNumbersFromfile(char *file_name_with_path, int max_number) {
+void readNumbersFromfile(char *file_name_with_pathx) {
     FILE* f = fopen(file_name_with_path, "r");
     int number = 0;
 
     while( fscanf(f, "%d,", &number) > 0 )
     {
-        if(number > max_number) {
-            printf("Number greater than %d was found! This number will be excluded from the program! - %d", max_number, number);
-        }else {
-            printf("This is the number %d\n", number);
-        }
+        printf("This is the number %d\n", number);
     }
 
     fclose(f);
