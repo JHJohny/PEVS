@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/stat.h>   // stat
+#include <stdbool.h>    // bool type
 
 char *ReadFile(char *filename)
 {
@@ -142,10 +144,33 @@ Third one is basically just a "placeholder" file where the decrypted message sho
     printf("Subor - %s sa uspesne desifroval do suboru %s, desifrovana sprava je %s\n\n", crypted_file_name, decrypted_file_name, decrypted_message);
 }
 
+bool doesFileExist(char *filepath){
+    struct stat   buffer;
+    return (stat (filepath, &buffer) == 0);
+}
+
+void handleIfTheFileDoesntExist(char *file_name) {
+    /*
+    This function checks whether file exist or not.
+
+    Function takes one parameter - file name (full path is recommended) and checks where file exist or not.
+    If the file doesn't exist - program is stopped
+    */
+
+    if(!doesFileExist(file_name)) {
+        printf("Tento subor nebol najdeny! - %s \nProsim presun tento subor do zlozky, kde sa nachadza tento .c kod\npotom spusti program znovu.\n\n", file_name);
+        exit(0);
+    }
+}
+
 int main() {
-    char *crypted_file_name="text.txt";
-    char *key_file_name="key.txt";
-    char *descrypted_file_name="translation.txt";
+    char *crypted_file_name="./text.txt";
+    char *key_file_name="./key.txt";
+    char *descrypted_file_name="./translation.txt";
+
+    handleIfTheFileDoesntExist(crypted_file_name);
+    handleIfTheFileDoesntExist(key_file_name);
+    handleIfTheFileDoesntExist(descrypted_file_name);
 
     decipherTheText(key_file_name, crypted_file_name, descrypted_file_name);
 
