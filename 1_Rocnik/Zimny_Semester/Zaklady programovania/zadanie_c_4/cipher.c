@@ -3,20 +3,14 @@
 #include <string.h>
 #include <ctype.h>
 
-void readNumbersFromfile(char *file_name_with_path) {
-    FILE* f = fopen(file_name_with_path, "r");
-    int number = 0;
-
-    while( fscanf(f, "%d,", &number) > 0 )
-    {
-        printf("This is the number %d\n", number);
-    }
-
-    fclose(f);
-}
-
 char *ReadFile(char *filename)
 {
+/*
+This function reads the the file and return it as a string.
+
+This function reads the given file (full path) and return it as a string.
+Reading consist of dynamic buffer that shouldn't allocate more memory than it's necessary to.
+*/
    char *buffer = NULL;
    int string_size, read_size;
    FILE *handler = fopen(filename, "r");
@@ -56,6 +50,12 @@ char *ReadFile(char *filename)
 }
 
 char findLetterAfterInt(char *my_string, int num) {
+/*
+This function finds any kind of letter (isalpha) within the string.
+
+This function finds numbers that follow any kind of letter.
+*/
+
     char *num_as_string = malloc(sizeof(char));
     sprintf(num_as_string, "%d", num);
     int new_number = 1; //Remember if we are looping trough the new number
@@ -94,7 +94,18 @@ char findLetterAfterInt(char *my_string, int num) {
 }
 
 void decipherTheText(char *keys_file_name, char *crypted_file_name, char *decrypted_file_name) {
-    //TODO append to the array
+/*
+This function is SPECIFIC CUSTOM function that tries to decipher the message in the given file.
+
+This function takes as a argument three files.
+First one contains numbers and letters that are associated to the specific numbers
+Second one contains just the numbers, that represent some kind of message that is suppose to be decrypted
+Third one is basically just a "placeholder" file where the decrypted message should be stored to
+*/
+    //Final text array
+    char *decrypted_message;
+    decrypted_message = malloc(sizeof(char));
+    int decrypted_message_index = 0; //Kind of "looping" trough string
 
     //Firstly we will read number by number from the crypted file name
     FILE* f_crypted_file = fopen(crypted_file_name, "r"); //Read the text - where the message is crypted
@@ -102,16 +113,33 @@ void decipherTheText(char *keys_file_name, char *crypted_file_name, char *decryp
 
     char *key_file_content = ReadFile(keys_file_name);
 
+    //Looping trough the numbers that hide the message
     while( fscanf(f_crypted_file, "%d,", &number) > 0 )
     {
+        //Decrypt the number that hide the letter
         char decrypted_letter = findLetterAfterInt(key_file_content, number);
 
-        printf("%c", decrypted_letter);
+        //Check whether a letter was found
+        if(decrypted_letter == '\0') {
+            printf("Nebolo najdene pismeno ku tomuto cislu! - %d\nProgram sa zastavi, prosim uprav data a spusti program znova.\n", number);
+            exit(0);
+        }
+
+        decrypted_message[decrypted_message_index] = decrypted_letter;
+
+        //We are dynamically storing decrypted letter one by one to the array
+        decrypted_message_index++;
     }
 
     fclose(f_crypted_file);
 
-    printf("\n\n"); //Just a aesthetic
+    //Message decryption / reading is done - lets save it to the file
+    decrypted_message[strlen(decrypted_message)] = '\0'; //Close the array - otherwise any part of memory could be readen
+    FILE* f_decrypted = fopen(decrypted_file_name, "w");
+    fprintf(f_decrypted, "%s", decrypted_message);
+    fclose(f_decrypted);
+
+    printf("Subor - %s sa uspesne desifroval do suboru %s, desifrovana sprava je %s\n\n", crypted_file_name, decrypted_file_name, decrypted_message);
 }
 
 int main() {
@@ -123,19 +151,4 @@ int main() {
 
     return 0;
 
-    char tmp_text[] = "This is my test temporary string 12 g svdvf";
-
-    char letter = findLetterAfterInt(tmp_text, 12);
-
-    if(letter != '\0' && letter != 0) {
-        printf("This is the found letter %c \n", letter);
-    }else {
-        printf("The letter was not found\n");
-    }
-
-    return 0;
-
-    readNumbersFromfile(crypted_file_name);
-
-    return 0;
 }
