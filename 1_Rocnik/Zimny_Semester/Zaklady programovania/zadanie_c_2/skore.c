@@ -138,6 +138,7 @@ int main( ){
     }
 
     if(numbersCount > 0){
+        printf("");
         averageNumber = (numbersSum/numbersCount);
         printf("V subore bolo %d skore \n", numbersCount);
         printf("Najmensia hodnota je %.2f \n", lowestNumber);

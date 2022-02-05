@@ -1,2 +1,2 @@
 File 43.2 can 11.2 contain 11 any 18.4 numbers. It doesn't 21 matter 32 , 88 because 44 my 54 parser 87 can 76 find 54 any 85 numbers 65 any 45 any 76.2 text 97.2 file.
-No 21 matter 96 how 54 complicated 88 the 34 number 99.7 is 123 stored, 24 parser 99.2 is 77.1 looking 87.4 for 33.9 unlimited 43.4 numbers 21.4 among 99.9 any 45.2 chars.
+No 21 matter 96 how -54 complicated 88 the 34 number 99.7 is 123 stored, 24 parser 99.2 is 77.1 looking 87.4 for 33.9 unlimited 43.4 numbers 21.4 among 99.9 any 45.2 chars.
