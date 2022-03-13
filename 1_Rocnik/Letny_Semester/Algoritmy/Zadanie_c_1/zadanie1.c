@@ -6,18 +6,32 @@
 //in assignment, there is explicitly said to use structures, but I don't think it's a necessary.
 //Logic - instead of allocating memory for the entire file I could read line by line and insert the elements in order with the binary search
 
-void test(char* fileName)
+typedef struct zasielkaStruct
+{
+    int prio;
+    char* id;
+} zasielka;
+
+void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 {
     FILE* fileHandler;
     char* line;
 
-    fileHandler = fopen(fileName, "r");
+    fileHandler = fopen(fileName, "r"); //Just opening of the file
 
+    int zasielkyIndex = 0; //With this index, we will write to the zasielky array
+    ///Looping trough the file > LINE BY LINE and extracting priority and ID of the zasielka
     while(fgets(line, 13, fileHandler)) {
-        char* prio = strtok(line, " ");
-        printf("PRIO is %s\n", prio);
-        prio = strtok(NULL, " ");
-        printf("ID is %s\n", prio);
+        char* splitToken = strtok(line, " "); //First split - priority
+        zasielky[zasielkyIndex].prio = atoi(splitToken); //atoi - we want to convert string to int
+        splitToken = strtok(NULL, " "); //Second split - ID
+        zasielky[zasielkyIndex].id = splitToken;
+
+        //printf("Zasielka index %d has priority %d and ID %s\n", zasielkyIndex, zasielky[zasielkyIndex].prio, zasielky[zasielkyIndex].id); - JUST VERBOSE DEBUG
+
+        //zasielkyIndex = zasielkyIndex + 1; Bad
+        //zasielkyIndex += 1; Better
+        zasielkyIndex++; //Best
     }
 
     fclose(fileHandler);
@@ -25,23 +39,9 @@ void test(char* fileName)
 
 int main()
 {
-    /*
-    typedef struct zasielkaStruct
-    {
-        int prio;
-        char* id;
-    } zasielka;
-
     zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 100000);
 
-    for(int x = 0; x < 10; x++)
-    {
-        zasielky[x].prio = 10 + x;
-        zasielky[x].id = "XXX";
-    }
-    */
-
-    test("./DataExample.txt");
+    getZasielkyFromFile(zasielky, "./DataExample.txt");
 
     return 0;
 }
