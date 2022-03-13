@@ -14,6 +14,13 @@ typedef struct zasielkaStruct
 
 void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 {
+    /*NON ABSTRACT method that reads the priority and ID from the file and writes it the to array
+    *
+    *This method is very specific logic oriented and could not be reused in any other code. This method gets
+    *pre-created array of struct as a param1 and filename as a param2
+    *Loop trough the file - line by line and split the line by a space. Splitted tokens (values) are used to create
+    *a record in the zasielky array.
+    */
     FILE* fileHandler;
     char* line;
 
