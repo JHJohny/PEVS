@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 //Zadanie 1 is sorting algorithm related
 //in assignment, there is explicitly said to use structures, but I don't think it's a necessary.
@@ -13,12 +14,16 @@ void test(char* fileName)
     fileHandler = fopen(fileName, "r");
 
     while(fgets(line, 12, fileHandler)) {
-        printf("%s\n", line);
+        char* prio = strtok(line, " ");
+        printf("%s", prio);
     }
+
+    fclose(fileHandler);
 }
 
 int main()
 {
+    /*
     typedef struct zasielkaStruct
     {
         int prio;
@@ -32,7 +37,9 @@ int main()
         zasielky[x].prio = 10 + x;
         zasielky[x].id = "XXX";
     }
-    //test("./DataExample.txt");
+    */
+
+    test("./DataExample.txt");
 
     return 0;
 }
