@@ -9,13 +9,15 @@
 void test(char* fileName)
 {
     FILE* fileHandler;
-    char line[12];
+    char* line;
 
     fileHandler = fopen(fileName, "r");
 
-    while(fgets(line, 12, fileHandler)) {
+    while(fgets(line, 13, fileHandler)) {
         char* prio = strtok(line, " ");
-        printf("%s", prio);
+        printf("PRIO is %s\n", prio);
+        prio = strtok(NULL, " ");
+        printf("ID is %s\n", prio);
     }
 
     fclose(fileHandler);
