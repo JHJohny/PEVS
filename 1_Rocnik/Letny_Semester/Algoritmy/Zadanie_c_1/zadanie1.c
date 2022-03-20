@@ -31,7 +31,7 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 
     int zasielkyIndex = 0; //With this index, we will write to the zasielky array
     ///Looping trough the file > LINE BY LINE and extracting priority and ID of the zasielka
-    while(fgets(line, 13, fileHandler)) {
+    while(fgets(line, 15, fileHandler)) {
         char* splitToken = strtok(line, " "); //First split - priority
         zasielky[zasielkyIndex].prio = atoi(splitToken); //atoi - we want to convert string to int
         splitToken = strtok(NULL, " "); //Second split - ID
@@ -39,7 +39,7 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
         zasielky[zasielkyIndex].id = malloc( sizeof(char*) * 7 );
         strcpy(zasielky[zasielkyIndex].id, splitToken);
 
-        printf("Zasielka index %d has priority %d and ID %s\n", zasielkyIndex, zasielky[zasielkyIndex].prio, zasielky[zasielkyIndex].id);// - JUST VERBOSE DEBUG
+        //printf("Zasielka index %d has priority %d and ID %s\n", zasielkyIndex, zasielky[zasielkyIndex].prio, zasielky[zasielkyIndex].id);// - JUST VERBOSE DEBUG
 
         //zasielkyIndex = zasielkyIndex + 1; Bad
         //zasielkyIndex += 1; Better
@@ -50,7 +50,7 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 }
 
 
-void countingSort(int arr[], int lengthOfArray, int place) // function to implement counting sort
+void countingSort(zasielka *zasielky, int lengthOfArray, int place) // function to implement counting sort
 {
     /*Sort array in order based on the @place parameter
     *
@@ -65,13 +65,14 @@ void countingSort(int arr[], int lengthOfArray, int place) // function to implem
     *In the last step, inputed array is being overwritten by a temporary one - where the sortion happened.
     */
 
-    int output[lengthOfArray + 1];
+    //int output[lengthOfArray + 1];
+    zasielka outputZasielky[lengthOfArray + 1];
     int occurences[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; //This array represent occurence of each digit from the nth place
 
     //Looping trough the list and recording the count of digit from the nth place
     for (int i = 0; i < lengthOfArray; i++)
     {
-        int moduleFromElement = ((arr[i] / place) % 10); //This modulo represents digit from 0-10 from the nth place we are sorting
+        int moduleFromElement = ((zasielky[i].prio / place) % 10); //This modulo represents digit from 0-10 from the nth place we are sorting
 
         occurences[moduleFromElement]++; //Increment on nth place, means we have one more digit ending with this number - number > moduleFromElement
     }
@@ -85,21 +86,21 @@ void countingSort(int arr[], int lengthOfArray, int place) // function to implem
     //Sort numbers in order, based on the nth place
     for (int i = (lengthOfArray - 1); i >= 0; i--)
     {
-        int inputValue = (arr[i] / place);
+        int inputValue = (zasielky[i].prio / place);
         int indexFromOccurences = occurences[inputValue % 10];
 
-        output[(indexFromOccurences) - 1] = arr[i]; //Cannot use -- because decrement would be applied to variable before, not for output index itself
+        outputZasielky[(indexFromOccurences) - 1] = zasielky[i]; //Cannot use -- because decrement would be applied to variable before, not for output index itself
         occurences[inputValue % 10]--; //% 10 - because we are working only with the nth integer, and we want it decrement, because we already "wrote down" value from this occurence
     }
 
     //Just update the array, with the sorted one (Sorted one, is only within the nth place!)
     for (int i = 0; i < lengthOfArray; i++)
     {
-        arr[i] = output[i];
+        zasielky[i] = outputZasielky[i];
     }
 }
 
-//Radix sort - basically
+//Radix sort - basically nthime countingSort
 void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in some .h library, there is already a definition for a radix sort.
 {
     /*
@@ -107,77 +108,31 @@ void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in 
     *
     */
 
-    printf("This is the prio %d and this is the ID %s\n", zasielky[0].prio, zasielky[0].id);
-
-    /*
     int place = 1;
     for(int i = 1; i < 5; i++) //We are sorting up to 9999 priority > 1st, 10nth, 100nth, 1000nth places
     {
-        countingSort(array, lengthOfArray, place);
+        countingSort(zasielky, lengthOfArray, place);
         place *= 10;
     }
-    */
 }
 
 int main()
 {
-
-    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 100000); //Creating list of zasielky
+    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 10); //Creating list of zasielky
 
     getZasielkyFromFile(zasielky, "./DataExample.txt");
 
-    printf("Prio and id is %d %s \n", zasielky[0].prio, zasielky[0].id);
-    printf("Prio and id is %d %s \n", zasielky[1].prio, zasielky[1].id);
+    int lengthOfZasielky = 10;
 
-    /*
-    int fictionalZasielky[] = {1, 90, 11, 20, 43, 29, 88, 77, 54, 48, 85, 92, 9999, 9922, 9123};
-    int lengthOfZasielky = sizeof fictionalZasielky / sizeof fictionalZasielky[0];
-
-    radixsortCustom(fictionalZasielky, lengthOfZasielky);
-    */
-
-    /*
-    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 10);
-
-    zasielky[0].prio = 11;
-    zasielky[0].id = "8PTRXG";
-
-    zasielky[1].prio = 7541;
-    zasielky[1].id = "7ADS1M";
-
-    zasielky[2].prio = 1234;
-    zasielky[2].id = "14ASD1";
-
-    zasielky[3].prio = 8654;
-    zasielky[3].id = "I134KM";
-
-    zasielky[4].prio = 231;
-    zasielky[4].id = "8MND12";
-
-    zasielky[5].prio = 2222;
-    zasielky[5].id = "4JFM1M";
-
-    zasielky[6].prio = 4531;
-    zasielky[6].id = "3MA29L";
-
-    zasielky[7].prio = 11;
-    zasielky[7].id = "123SFM";
-
-    zasielky[8].prio = 8;
-    zasielky[8].id = "75MJ12";
-
-    zasielky[9].prio = 9812;
-    zasielky[9].id = "15KA1K";
-
-    radixsortCustom(fictionalZasielky, 10);
+    radixsortCustom(zasielky, lengthOfZasielky);
 
     //Regular printing HERE
     printf("This is the sorted list ");
     for(int i = 0; i < lengthOfZasielky; i++)
     {
-        printf("%d ", fictionalZasielky[i]);
+        printf("%d %s \n", zasielky[i].prio, zasielky[i].id);
     }
     printf("\n\n");
-    */
+
     return 0;
 }
