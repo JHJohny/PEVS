@@ -15,6 +15,10 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 {
     /*NON ABSTRACT method that reads the priority and ID from the file and writes it the to array
     *
+    *Params:
+    *@zasielky - *zasielka: list of custom structure
+    *@fileName - *char: name of the file - full path
+    *
     *This method is very specific logic oriented and could not be reused in any other code. This method gets
     *pre-created array of struct as a param1 and filename as a param2
     *Loop trough the file - line by line and split the line by a space. Splitted tokens (values) are used to create
@@ -46,12 +50,18 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 
 void countingSort(int a[], int n, int place) // function to implement counting sort
 {
-    printf("This is array ");
-    for(int i = 0; i < n; i++)
-    {
-        printf("%d ", a[i]);
-    }
-    printf("\n");
+    /*Sort array in order based on the @place parameter
+    *
+    *Params:
+    *@a - int[]:    array that is suppose to be sorted
+    *@n - int:      length of the array > could be null
+    *@place - int:   place that we are sorting, it increase by 10s
+    *
+    *Counting sort reads nth place of each digit in array and note occurence of that digit into a array
+    *Then calculate cumulative sum of that array - n element in array is equal to that element plus element before
+    *Then based on occurences that were noted in the step 1, algorithm know where the specific number is suppose to be placed to
+    *In the last step, inputed array is being overwritten by a temporary one - where the sortion happened.
+    */
 
     int output[n + 1];
     int occurences[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; //This array represent occurence of each digit from the nth place
