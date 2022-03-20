@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-//Zadanie 1 is sorting algorithm related
-//in assignment, there is explicitly said to use structures, but I don't think it's a necessary.
-
 typedef struct zasielkaStruct
 {
     //Custom, very specific/"usage" oriented structure design specific for companies packages
@@ -56,8 +53,8 @@ void countingSort(zasielka *zasielky, int lengthOfArray, int place) // function 
     /*Sort array in order based on the @place parameter
     *
     *Params:
-    *@a - int[]:    array that is suppose to be sorted
-    *@n - int:      length of the array > could be null
+    *@zasielky - zasielka[]:    array that is suppose to be sorted
+    *@lengthOfArrayn - int:      length of the array > could be null
     *@place - int:   place that we are sorting, it increase by 10s
     *
     *Counting sort reads nth place of each digit in array and note occurence of that digit into a array
@@ -104,9 +101,11 @@ void countingSort(zasielka *zasielky, int lengthOfArray, int place) // function 
 //Radix sort - basically nthime countingSort
 void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in some .h library, there is already a definition for a radix sort.
 {
-    /*
+    /*RadixSort - adjusted for a specific data structure
     *
-    *
+    *Params:
+    *@zasielky - zasielka[]:    array of zasielka data structure
+    *@lengthOfArray - int:      length of zasielky array
     */
 
     int place = 1;
@@ -119,21 +118,20 @@ void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in 
 
 int main()
 {
-    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 10); //Creating list of zasielky
+    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 100000); //Creating list of zasielky
+    getZasielkyFromFile(zasielky, "./zoznam.txt"); //Record all zasielky from file to the array that was allocated a line before
+    int lengthOfZasielky = 100000; //Could use zasielky.id / zasielky[0].id - but we are suppose to design this code for 100 000 specific
 
-    getZasielkyFromFile(zasielky, "./DataExample.txt");
+    radixsortCustom(zasielky, lengthOfZasielky); //Applying actual radix sort
 
-    int lengthOfZasielky = 10;
-
-    radixsortCustom(zasielky, lengthOfZasielky);
-
-    //Regular printing HERE
-    printf("-----This is the sorted list ");
+    //Writing to file - I didn't make it as a specific function, because it wouldn't be abstracted anyway
+    //We are using very specific structure, that hardly could be reused anywhere
+    FILE* results = fopen("./zadanie.out", "w");
     for(int i = 0; i < lengthOfZasielky; i++)
     {
-        printf("%d %s \n", zasielky[i].prio, zasielky[i].id);
+        fprintf(results, "%d %s\n", zasielky[i].prio, zasielky[i].id); //Writing to the file
     }
-    printf("-----");
+    fclose(results);
 
     return 0;
 }
