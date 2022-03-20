@@ -142,6 +142,7 @@ void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in 
 int main()
 {
     char *sourceFilepath;
+    char *destinationFilepath = "./zadanie.out";
     sourceFilepath = getUsersInput("Prosim zadaj absolutnu cestu k zasielkovemu suboru - vratane nazvu suboru (Stlac enter, ak chces pouzit defaultnu moznost > ./zoznam.txt ): ", "./zoznam.txt");
 
     //Checking if source file exist
@@ -163,12 +164,14 @@ int main()
 
     //Writing to file - I didn't make it as a specific function, because it wouldn't be abstracted anyway
     //We are using very specific structure, that hardly could be reused anywhere
-    FILE* results = fopen("./result.out", "w");
+    FILE* results = fopen(destinationFilepath, "w");
     for(int i = 0; i < lengthOfZasielky; i++)
     {
         fprintf(results, "%d %s\n", zasielky[i].prio, zasielky[i].id); //Writing to the file
     }
     fclose(results);
+
+    printf("Zasielky boli uspesne zoradane a zapisane do suboru %s \n", destinationFilepath);
 
     return 0;
 }
