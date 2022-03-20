@@ -1,6 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <stdbool.h>
+
+bool doesFileExist(char *filepath) //Util
+{
+    struct stat   buffer;
+    return (stat (filepath, &buffer) == 0);
+}
 
 typedef struct zasielkaStruct
 {
@@ -8,6 +16,21 @@ typedef struct zasielkaStruct
     int prio;
     char* id;
 } zasielka;
+
+//*COPIED FROM skore.c - Schindler's assignment
+char *getUsersInput(char *askingSentence, char *defaultString){ //Ask user for his input
+    char *usersInput;
+    usersInput=malloc(sizeof(char));
+
+    printf("%s", askingSentence);
+    scanf("%99[^\n]", usersInput);
+
+    if(strlen(usersInput) == 0){ //For checking if user entered just nothing
+        return defaultString;
+    }
+
+    return usersInput;
+}
 
 void getZasielkyFromFile(zasielka *zasielky, char* fileName)
 {
@@ -118,6 +141,19 @@ void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in 
 
 int main()
 {
+    char *filepath;
+    filepath = getUsersInput("Prosim zadaj absolutnu cestu k zasielkovemu suboru - vratane nazvu suboru (Stlac enter, ak chces pouzit defaultnu moznost > ./zoznam.txt ): ", "./zoznam.txt");
+
+    //Checking if file exists
+    if(doesFileExist(filepath)){
+        printf("Subor najdeny - OK\n");
+    }else{
+        printf("Subor neexistuje!\n");
+        return 0;
+    }
+
+
+
     zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 100000); //Creating list of zasielky
     getZasielkyFromFile(zasielky, "./zoznam.txt"); //Record all zasielky from file to the array that was allocated a line before
     int lengthOfZasielky = 100000; //Could use zasielky.id / zasielky[0].id - but we are suppose to design this code for 100 000 specific
