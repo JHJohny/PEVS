@@ -121,5 +121,45 @@ int main()
 
     radixsortCustom(fictionalZasielky, lengthOfZasielky);
 
+    zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 10);
+
+    zasielky[0].prio = 11;
+    zasielky[0].id = "8PTRXG";
+
+    zasielky[1].prio = 7541;
+    zasielky[1].id = "7ADS1M";
+
+    zasielky[2].prio = 1234;
+    zasielky[2].id = "14ASD1";
+
+    zasielky[3].prio = 8654;
+    zasielky[3].id = "I134KM";
+
+    zasielky[4].prio = 231;
+    zasielky[4].id = "8MND12";
+
+    zasielky[5].prio = 2222;
+    zasielky[5].id = "4JFM1M";
+
+    zasielky[6].prio = 4531;
+    zasielky[6].id = "3MA29L";
+
+    zasielky[7].prio = 11;
+    zasielky[7].id = "123SFM";
+
+    zasielky[8].prio = 8;
+    zasielky[8].id = "75MJ12";
+
+    zasielky[9].prio = 9812;
+    zasielky[9].id = "15KA1K";
+
+    //Regular printing HERE
+    printf("This is the sorted list ");
+    for(int i = 0; i < lengthOfZasielky; i++)
+    {
+        printf("%d ", fictionalZasielky[i]);
+    }
+    printf("\n\n");
+
     return 0;
 }
