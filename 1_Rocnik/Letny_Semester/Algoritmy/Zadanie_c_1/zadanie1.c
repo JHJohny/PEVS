@@ -73,16 +73,20 @@ void countingSort(int a[], int n, int place) // function to implement counting s
     for(int i = 0; i < (n - 1); i++)
     {
         int inputValue = (a[i] / place);
-        int indexFromOccurences = occurences[inputValue];
+        int indexFromOccurences = occurences[inputValue % 10];
 
-        output[indexFromOccurences] = inputValue;
-        occurences[inputValue] = (occurences[inputValue]--);
+        output[indexFromOccurences + 1] = a[i];
+        occurences[inputValue % 10]++; //% 10 - because we are working only with the nth integer
     }
 
     /*
     //Sort numbers in order, based on the nth place
     for (int i = n - 1; i >= 0; i--)
     {
+        printf("First debug %d \n", a[i]);
+        printf("Second debug %d \n", (a[i] / place));
+        printf("Third debug %d \n", (a[i] / place) % 10);
+        printf("Fourth debug %d \n", output[occurences[(a[i] / place) % 10] - 1]);
         output[occurences[(a[i] / place) % 10] - 1] = a[i];
         occurences[(a[i] / place) % 10]--;
     }
