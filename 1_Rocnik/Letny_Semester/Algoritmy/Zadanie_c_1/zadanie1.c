@@ -141,28 +141,29 @@ void radixsortCustom(zasielka *zasielky, int lengthOfArray) //Custom because in 
 
 int main()
 {
-    char *filepath;
-    filepath = getUsersInput("Prosim zadaj absolutnu cestu k zasielkovemu suboru - vratane nazvu suboru (Stlac enter, ak chces pouzit defaultnu moznost > ./zoznam.txt ): ", "./zoznam.txt");
+    char *sourceFilepath;
+    sourceFilepath = getUsersInput("Prosim zadaj absolutnu cestu k zasielkovemu suboru - vratane nazvu suboru (Stlac enter, ak chces pouzit defaultnu moznost > ./zoznam.txt ): ", "./zoznam.txt");
 
-    //Checking if file exists
-    if(doesFileExist(filepath)){
-        printf("Subor najdeny - OK\n");
-    }else{
-        printf("Subor neexistuje!\n");
+    //Checking if source file exist
+    if(doesFileExist(sourceFilepath))
+    {
+        printf("Subor so zasielkami najdeny - OK\n");
+    }
+    else
+    {
+        printf("Subor so zasielkami neexistuje!\n");
         return 0;
     }
 
-
-
     zasielka *zasielky = (zasielka*) malloc(sizeof(zasielka) * 100000); //Creating list of zasielky
-    getZasielkyFromFile(zasielky, "./zoznam.txt"); //Record all zasielky from file to the array that was allocated a line before
+    getZasielkyFromFile(zasielky, sourceFilepath); //Record all zasielky from file to the array that was allocated a line before
     int lengthOfZasielky = 100000; //Could use zasielky.id / zasielky[0].id - but we are suppose to design this code for 100 000 specific
 
     radixsortCustom(zasielky, lengthOfZasielky); //Applying actual radix sort
 
     //Writing to file - I didn't make it as a specific function, because it wouldn't be abstracted anyway
     //We are using very specific structure, that hardly could be reused anywhere
-    FILE* results = fopen("./zadanie.out", "w");
+    FILE* results = fopen("./result.out", "w");
     for(int i = 0; i < lengthOfZasielky; i++)
     {
         fprintf(results, "%d %s\n", zasielky[i].prio, zasielky[i].id); //Writing to the file
