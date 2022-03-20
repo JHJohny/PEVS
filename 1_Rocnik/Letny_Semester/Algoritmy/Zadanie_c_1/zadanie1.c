@@ -7,6 +7,7 @@
 
 typedef struct zasielkaStruct
 {
+    //Custom, very specific/"usage" oriented structure design specific for companies packages
     int prio;
     char* id;
 } zasielka;
@@ -37,7 +38,7 @@ void getZasielkyFromFile(zasielka *zasielky, char* fileName)
         splitToken = strtok(NULL, " "); //Second split - ID
 
         zasielky[zasielkyIndex].id = malloc( sizeof(char*) * 7 );
-        strcpy(zasielky[zasielkyIndex].id, splitToken);
+        strcpy(zasielky[zasielkyIndex].id, strtok(splitToken, "\n")); //Strtok - because we want to handle, if string contains new line too.
 
         //printf("Zasielka index %d has priority %d and ID %s\n", zasielkyIndex, zasielky[zasielkyIndex].prio, zasielky[zasielkyIndex].id);// - JUST VERBOSE DEBUG
 
@@ -127,12 +128,12 @@ int main()
     radixsortCustom(zasielky, lengthOfZasielky);
 
     //Regular printing HERE
-    printf("This is the sorted list ");
+    printf("-----This is the sorted list ");
     for(int i = 0; i < lengthOfZasielky; i++)
     {
         printf("%d %s \n", zasielky[i].prio, zasielky[i].id);
     }
-    printf("\n\n");
+    printf("-----");
 
     return 0;
 }
