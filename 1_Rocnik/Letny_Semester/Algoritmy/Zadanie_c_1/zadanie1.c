@@ -59,9 +59,9 @@ void countingSort(int a[], int n, int place) // function to implement counting s
     //Looping trough the list and recording the count of digit from the nth place
     for (int i = 0; i < n; i++)
     {
-        int moduleForElement = ((a[i] / place) % 10); //This modulo represents digit from 0-10 from the nth place we are sorting
+        int moduleFromElement = ((a[i] / place) % 10); //This modulo represents digit from 0-10 from the nth place we are sorting
 
-        occurences[moduleForElement]++;
+        occurences[moduleFromElement]++; //Increment on nth place, means we have one more digit ending with this number - number > moduleFromElement
     }
 
     //Summing out the values with the predecessor values - cumulative sum
@@ -70,30 +70,21 @@ void countingSort(int a[], int n, int place) // function to implement counting s
         occurences[i] += occurences[i - 1];
     }
 
-    for(int i = 0; i < (n - 1); i++)
+    //Sort numbers in order, based on the nth place
+    for (int i = (n - 1); i >= 0; i--)
     {
         int inputValue = (a[i] / place);
         int indexFromOccurences = occurences[inputValue % 10];
 
-        output[indexFromOccurences + 1] = a[i];
-        occurences[inputValue % 10]++; //% 10 - because we are working only with the nth integer
+        output[(indexFromOccurences) - 1] = a[i]; //Cannot use -- because decrement would be applied to variable before, not for output index itself
+        occurences[inputValue % 10]--; //% 10 - because we are working only with the nth integer, and we want it decrement, because we already "wrote down" value from this occurence
     }
 
-    /*
-    //Sort numbers in order, based on the nth place
-    for (int i = n - 1; i >= 0; i--)
-    {
-        printf("First debug %d \n", a[i]);
-        printf("Second debug %d \n", (a[i] / place));
-        printf("Third debug %d \n", (a[i] / place) % 10);
-        printf("Fourth debug %d \n", output[occurences[(a[i] / place) % 10] - 1]);
-        output[occurences[(a[i] / place) % 10] - 1] = a[i];
-        occurences[(a[i] / place) % 10]--;
-    }
-    */
-
+    //Just update the array, with the sorted one (Sorted one, is only within the nth place!)
     for (int i = 0; i < n; i++)
+    {
         a[i] = output[i];
+    }
 }
 
 // function to implement radix sort
