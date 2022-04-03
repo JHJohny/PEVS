@@ -9,10 +9,13 @@
 
 using namespace std;
 typedef std::map<string, string> wordDictionary; //Map works as dictionary in any other language
+std::fstream file("/Users/johny/CLionProjects/untitled/out.txt");
 
-bool endsWith(const std::string &mainStr, const std::string &toMatch)
+void print(std::ostream &streamOne, std::ostream &streamTwo, const std::string &str)
 {
-
+    //Custom print, that will print output to the console but also save string to the file
+    streamOne << str;
+    streamTwo << str;
 }
 
 inline bool doesFileExist(const std::string& fileNameWithPath)
@@ -55,11 +58,9 @@ inline bool doesStringEndsWith(const std::string _string, const std::string post
     }
 }
 
-/*
 inline bool doesStringContains(const std::string _string, const std::string substring)
 {
-    if(endsWith(_string, postfix))
-    {
+    if (_string.find(substring) != std::string::npos) {
         return true;
     }
     else
@@ -67,7 +68,6 @@ inline bool doesStringContains(const std::string _string, const std::string subs
         return false;
     }
 }
-*/
 
 vector<string> split (string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -98,7 +98,6 @@ public:
 
         if(!myfile.is_open())
         {
-            printf("Subor sa nepodarilo otvorit! Prosim over ci nie je poskodeny, alebo nie je otvoreny inym programom.");
             perror("File failed to open.");
             exit(EXIT_FAILURE);
         }
@@ -144,6 +143,22 @@ public:
         return wordDictEndingWith;
     }
 
+public:
+    wordDictionary wordsContains(std::string substring)
+    {
+        wordDictionary wordDictEndingWith;
+
+        //Looping trough the whole dictionary from the file
+        for (auto const& x : wordDict)
+        {
+            if(doesStringContains(x.first, substring))
+            {
+                wordDictEndingWith[x.first] = x.second;
+            }
+        }
+        return wordDictEndingWith;
+    }
+
 };
 
 
@@ -153,23 +168,24 @@ int main()
 
     if(!doesFileExist(fileNameWithPath))
     {
-        printf("Subor neexistuje!");
         perror("File doesn't exist!");
         exit(EXIT_FAILURE);
     }
 
-    CustomDictionary dictionary = CustomDictionary(fileNameWithPath);
+    CustomDictionary customDic = CustomDictionary(fileNameWithPath);
     wordDictionary wordDictionaryContains;
-    
+    wordDictionaryContains = customDic.wordsEndingWith("ro");
 
+    for (auto const& x : wordDictionaryContains)
+    {
+        std::cout << x.first  // string (key)
+                  << ':'
+                  << x.second // string's value
+                  << std::endl;
+    }
 
     /* CONTAINS
-    auto hello  = std::string("hello");
-    auto el = std::string("el");
 
-    if (hello.find(el) != std::string::npos) {
-        std::cout << "found!" << '\n';
-    }
     */
 
 }
