@@ -8,18 +8,11 @@
 #include <map>
 
 using namespace std;
+typedef std::map<string, string> wordDictionary; //Map works as dictionary in any other language
 
 bool endsWith(const std::string &mainStr, const std::string &toMatch)
 {
-    if(mainStr.size() >= toMatch.size() &&
-       mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+
 }
 
 inline bool doesFileExist(const std::string& fileNameWithPath)
@@ -36,6 +29,45 @@ inline bool doesFileExist(const std::string& fileNameWithPath)
         return false;
     }
 }
+
+inline bool doesStringStartsWith(const std::string _string, const std::string prefix)
+{
+    if (_string.rfind(prefix, 0) == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+inline bool doesStringEndsWith(const std::string _string, const std::string postfix)
+{
+    if(_string.size() >= postfix.size() &&
+            _string.compare(_string.size() - postfix.size(), postfix.size(), postfix) == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/*
+inline bool doesStringContains(const std::string _string, const std::string substring)
+{
+    if(endsWith(_string, postfix))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+*/
 
 vector<string> split (string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -55,13 +87,11 @@ vector<string> split (string s, string delimiter) {
 
 class CustomDictionary
 {
-    typedef std::map<string, string> wordDictionary; //Map works as dictionary in any other language
+    wordDictionary wordDict; //Dictionary for word and it's explanation
 
 public:
     CustomDictionary(std::string fileNameWithPath)
     {
-        wordDictionary wordDict;
-
         string line;
         ifstream myfile;
         myfile.open(fileNameWithPath);
@@ -81,6 +111,39 @@ public:
             wordDict[word] = wordExplanation;
         }
     }
+
+public:
+    wordDictionary wordsStartingWith(std::string prefix)
+    {
+        wordDictionary wordDictStartingWith;
+
+        //Looping trough the whole dictionary from the file
+        for (auto const& x : wordDict)
+        {
+            if(doesStringStartsWith(x.first, prefix))
+            {
+                wordDictStartingWith[x.first] = x.second;
+            }
+        }
+        return wordDictStartingWith;
+    }
+
+public:
+    wordDictionary wordsEndingWith(std::string postfix)
+    {
+        wordDictionary wordDictEndingWith;
+
+        //Looping trough the whole dictionary from the file
+        for (auto const& x : wordDict)
+        {
+            if(doesStringEndsWith(x.first, postfix))
+            {
+                wordDictEndingWith[x.first] = x.second;
+            }
+        }
+        return wordDictEndingWith;
+    }
+
 };
 
 
@@ -88,14 +151,17 @@ int main()
 {
     const std::string fileNameWithPath = "/Users/johny/CLionProjects/untitled/something.txt";
 
-    if(doesFileExist(fileNameWithPath))
+    if(!doesFileExist(fileNameWithPath))
     {
-        CustomDictionary dictionary = CustomDictionary(fileNameWithPath);
+        printf("Subor neexistuje!");
+        perror("File doesn't exist!");
+        exit(EXIT_FAILURE);
     }
-    else
-    {
-        printf("File doesn't exist");
-    }
+
+    CustomDictionary dictionary = CustomDictionary(fileNameWithPath);
+    wordDictionary wordDictionaryContains;
+    
+
 
     /* CONTAINS
     auto hello  = std::string("hello");
@@ -106,24 +172,4 @@ int main()
     }
     */
 
-    /* PREFIX
-    std::string str = "C++17";
-    std::string prefix = "C++";
-
-    if (str.rfind(prefix, 0) == 0) {
-        std::cout << "String starts with the given prefix" << std::endl;
-    } else {
-        std::cout << "String doesn't starts with prefix" << std::endl;
-    }
-    */
-
-    /* POSTFIX
-    std::string normalString = "Helloworld";
-    std::string postfix = "rld";
-
-    if(endsWith(normalString, postfix))
-    {
-        printf("Yes it contains");
-    }
-    */
 }
