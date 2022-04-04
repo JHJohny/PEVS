@@ -8,14 +8,37 @@
 #include <map>
 
 using namespace std;
+
 typedef std::map<string, string> wordDictionary; //Map works as dictionary in any other language
 std::fstream file("/Users/johny/CLionProjects/untitled/out.txt");
 
+//Custom print, that will print output to the console but also save string to the file
 void print(std::ostream &streamOne, std::ostream &streamTwo, const std::string &str)
 {
-    //Custom print, that will print output to the console but also save string to the file
     streamOne << str;
     streamTwo << str;
+}
+
+string handleUserInput(const std::string& askingSentence)
+{
+    std::string userInput;
+
+    while (true)
+    {
+        cout << askingSentence << endl;
+        cin >> userInput;
+
+        if(userInput == "" || userInput.length()==0)
+        {
+            cout << "Nevalidny vstup, prosim opakuj!" << endl;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return userInput;
 }
 
 inline bool doesFileExist(const std::string& fileNameWithPath)
@@ -161,6 +184,64 @@ public:
 
 };
 
+void handleConsoleOutputWithDictionary(wordDictionary wordDict, std::string searchingWord) //Matching word for the case when we are checking if the match is whole searching word
+{
+    int dictLength = wordDict.size();
+
+    //Ak žiadne slovo v slovníku nesplňa daný dotaz, vypíšte príslušné hlásenie o tom.
+    //If there was no match, print a note about it
+    if(dictLength == 0)
+    {
+        print(file, cout, "No word was matched!");
+        return; //Return because it makes no point to check for other things
+    }
+
+    //Ak iba jedno slovo spľňa daný dotaz, potom vypíšte toto slovo s jeho významom zo slovníka ako výstup.
+    //If there is only one match
+    if(dictLength == 1)
+    {
+        for (auto const& x : wordDict)
+        {
+            std::cout << x.first  // string (key)
+                      << ':'
+                      << x.second // string's value
+                      << std::endl;
+        }
+
+        return; //Return because it makes no point to check for other things
+    }
+
+    //Ak existuje dotaz v slovníku ako celé slovo, ale pritom je aj časť iného slova, vypíš
+    //slovo s jeho významom (napr. "kniha", vypíše len slovo kniha s významom)
+    //Basically checking whether searching word was complete match
+
+    //First check for complete match word itself
+    bool wasSearchingCompleteWordMatch = false;
+    for (auto const& x : wordDict)
+    {
+        if(x.first == searchingWord)
+        {
+            wasSearchingCompleteWordMatch = true;
+        }
+    }
+    //Printing only the exact match only
+    if(wasSearchingCompleteWordMatch)
+    {
+        string tmpString = searchingWord+":"+wordDict[searchingWord];
+        print(file, cout, tmpString);
+
+        return; //Return because it makes no point to check for other things
+    }
+
+    //Ak viac ako jedno slovo spľňa daný dotaz, potom vypíšte zoznam všetkých
+    //takýchto slov bez uvedenia ich významu (napr. slovo "knih").
+    for (auto const& x : wordDict)
+    {
+        std::cout << x.first  // string (key)
+                  << std::endl;
+    }
+
+}
 
 int main()
 {
@@ -173,19 +254,55 @@ int main()
     }
 
     CustomDictionary customDic = CustomDictionary(fileNameWithPath);
-    wordDictionary wordDictionaryContains;
-    wordDictionaryContains = customDic.wordsEndingWith("ro");
+    wordDictionary wordDict;
 
-    for (auto const& x : wordDictionaryContains)
+    while(true)
     {
-        std::cout << x.first  // string (key)
-                  << ':'
-                  << x.second // string's value
-                  << std::endl;
+        std::string usersInput = handleUserInput("\n####Prosim vyber si moznost####\n"
+                                                 "1.) <starting> ......... najdi význam slova začínajúceho danými znakmi\n"
+                                                 "2.) <containing> .......... najdi význam slova obsahujúceho dané znaky\n"
+                                                 "3.) <ending> ......... najdi význam slova končiaceho danými znakmi\n"
+                                                 "4.) <stop> .......... ukonči daný program");
+
+        int userChoice = atoi(usersInput.c_str());
+
+        switch (userChoice)
+        {
+            case 1:
+            {
+                string prefix = handleUserInput("Please enter prefix");
+                wordDict = customDic.wordsStartingWith(prefix);
+
+                handleConsoleOutputWithDictionary(wordDict, prefix);
+                break;
+            }
+            case 2:
+            {
+                string substring = handleUserInput("Please enter substring");
+                wordDict = customDic.wordsContains(substring);
+
+                handleConsoleOutputWithDictionary(wordDict, substring);
+                break;
+            }
+            case 3:
+            {
+                string postfix = handleUserInput("Please enter postfix");
+                wordDict = customDic.wordsEndingWith(postfix);
+
+                handleConsoleOutputWithDictionary(wordDict, postfix);
+                break;
+            }
+            case 4:
+            {
+                exit(EXIT_SUCCESS);
+                break;
+            }
+            default:
+            {
+                print(file, cout, "Nespravna volba, prosim opakuj\n");
+                break;
+            }
+        }
     }
-
-    /* CONTAINS
-
-    */
 
 }
