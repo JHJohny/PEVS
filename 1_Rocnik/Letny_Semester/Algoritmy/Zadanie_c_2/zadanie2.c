@@ -53,22 +53,30 @@ int customBinarySearch(int arr[], int length, int num)
 }
 
 int main() {
+    int lengthOfArray = 10000; // Array of numbers that will be used for search
+    int arrayWithNums[lengthOfArray]; // Actual array of these numbers
+    int howManyTimeAlgorithmsShouldBeTested = 2000;
+    int resultsFromBruteForceSearch = 0; // Temporary variable used for storing results
+    int resultsFromBinarySearch = 0; // Temporary variable used for storing results
 
-    int lengthOfArray = 10000;
-    int howManyTimeAlgorithmsShouldBeTested = 1000;
-
-    int arrayWithNums[lengthOfArray];
-
+    // Creating the array
     for (int i = 0; i < lengthOfArray; i++)
     {
         arrayWithNums[i] = i;
     }
 
-    int randomNumber = rand() % (lengthOfArray + 1 - 0) + 0;
-    printf("Random number is %d\n", randomNumber);
+    // Actual testing of the algorithms
+    for (int i = 0; i < howManyTimeAlgorithmsShouldBeTested; i++)
+    {
+        int randomNumber = rand() % lengthOfArray;
 
-    int resultFromBinarySearch = customBinarySearch(arrayWithNums, lengthOfArray, randomNumber);
-    printf("Result is %d\n", resultFromBinarySearch);
+        resultsFromBinarySearch += customBinarySearch(arrayWithNums, lengthOfArray, randomNumber);
+        resultsFromBruteForceSearch += customBruteForceSearch(arrayWithNums, lengthOfArray, randomNumber);
+    }
+
+    // Doing the final calculation + print
+    printf("Average bruteforce comparisons - %d\n", resultsFromBruteForceSearch / howManyTimeAlgorithmsShouldBeTested);
+    printf("Average binary comparisons - %d\n", resultsFromBinarySearch / howManyTimeAlgorithmsShouldBeTested);
 
     return 0;
 }
