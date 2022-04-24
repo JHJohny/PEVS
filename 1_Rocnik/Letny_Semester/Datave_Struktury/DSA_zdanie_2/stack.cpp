@@ -17,9 +17,9 @@ Stack::~Stack() {
 }
 
 // Utility function to add an element `x` to the stack
-void Stack::push(char x)
+void Stack::Push(char x)
 {
-    if (isFull())
+    if (IsFull())
     {
         cout << "Overflow\nProgram Terminated\n";
         exit(EXIT_FAILURE);
@@ -30,25 +30,25 @@ void Stack::push(char x)
 }
 
 // Utility function to pop a top element from the stack
-char Stack::pop()
+char Stack::Pop()
 {
     // check for stack underflow
-    if (isEmpty())
+    if (IsEmpty())
     {
         cout << "Underflow\nProgram Terminated\n";
         exit(EXIT_FAILURE);
     }
 
-    cout << "Removing " << peek() << endl;
+    cout << "Removing " << Top() << endl;
 
     // decrease stack size by 1 and (optionally) return the popped element
     return arr[top--];
 }
 
 // Utility function to return the top element of the stack
-char Stack::peek()
+char Stack::Top()
 {
-    if (!isEmpty()) {
+    if (!IsEmpty()) {
         return arr[top];
     }
     else {
@@ -62,11 +62,11 @@ int Stack::size() {
 }
 
 // Utility function to check if the stack is empty or not
-bool Stack::isEmpty() {
+bool Stack::IsEmpty() {
     return top == -1;
 }
 
 // Utility function to check if the stack is full or not
-bool Stack::isFull() {
+bool Stack::IsFull() {
     return top == capacity - 1;
 }

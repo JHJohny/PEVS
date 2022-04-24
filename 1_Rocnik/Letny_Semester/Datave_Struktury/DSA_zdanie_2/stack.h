@@ -13,13 +13,13 @@ public:
     Stack(int size = SIZE);         // constructor
     ~Stack();                       // destructor
 
-    void push(char);
-    char pop();
-    char peek();
+    void Push(char);
+    char Pop();
+    char Top();
 
     int size();
-    bool isEmpty();
-    bool isFull();
+    bool IsEmpty();
+    bool IsFull();
 
 private:
     char *arr;
