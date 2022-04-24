@@ -10,9 +10,10 @@ class Stack
     char capacity;
 
 public:
-    Stack(int size = SIZE);         // constructor
+    //Stack(int size = SIZE);         // constructor -This constructor is not actually used for this assinment
     ~Stack();                       // destructor
 
+    void Create(int size = SIZE); // something like constructor
     void Push(char);
     char Pop();
     char Top();

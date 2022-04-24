@@ -3,8 +3,8 @@ using namespace std;
 
 #include "stack.h"
 
-// Constructor to initialize the stack
-Stack::Stack(int size)
+// Constructor to initialize the stack - even it's not a real constructor as it should be
+void Stack::Create(int size)
 {
     arr = new char[size];
     capacity = size;
@@ -25,7 +25,6 @@ void Stack::Push(char x)
         exit(EXIT_FAILURE);
     }
 
-    cout << "Inserting " << x << endl;
     arr[++top] = x;
 }
 
@@ -38,8 +37,6 @@ char Stack::Pop()
         cout << "Underflow\nProgram Terminated\n";
         exit(EXIT_FAILURE);
     }
-
-    cout << "Removing " << Top() << endl;
 
     // decrease stack size by 1 and (optionally) return the popped element
     return arr[top--];
