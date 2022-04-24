@@ -2,25 +2,25 @@
 #include    <iomanip>
 using namespace std;
 
-
+#define SIZE 21
+// A class to represent a stack
 class Stack
 {
+    char top;
+    char capacity;
+
 public:
-Stack();           // constructor
-~Stack();              // destructor
+    Stack(int size = SIZE);         // constructor
+    ~Stack();                       // destructor
 
-void Push(int);       // push an int into a Stack
-int  Pop();            // pop an int from a Stack
-int  Top();               // same as pop but it doesn't erase value
+    void push(char);
+    char pop();
+    char peek();
 
-bool IsEmpty() const;    // is the Stack empty?
-bool IsFull() const;     // is the Stack full?
-
+    int size();
+    bool isEmpty();
+    bool isFull();
 
 private:
-int *stack;             // pointer to local stack of ints
-char chars[21];         // actual users input
-
-int top;                // top of stack (next avail. location)
-int maxsize;            // max size of the stack
+    char *arr;
 };

@@ -1,61 +1,72 @@
-#include    <iostream>
-#include    <iomanip>
+#include <iostream>
 using namespace std;
 
-#include    "stack.h"
+#include "stack.h"
 
-Stack::Stack()
+// Constructor to initialize the stack
+Stack::Stack(int size)
 {
-    top = 1-;
-    maxsize = 21;
+    arr = new char[size];
+    capacity = size;
+    top = -1;
 }
 
-Stack::~Stack()
-{
-    delete[] stack;
+// Destructor to free memory allocated to the stack
+Stack::~Stack() {
+    delete[] arr;
 }
 
-bool Stack::IsEmpty() const
+// Utility function to add an element `x` to the stack
+void Stack::push(char x)
 {
-    return (top == NULL);
-}
-
-bool Stack::IsFull() const
-{
-    return (top != NULL);
-}
-
-void Stack::Push(int i)
-{
-    if (top == (maxsize - 1))     //If the top reaches to the maximum stack size
+    if (isFull())
     {
-        throw overflow_error("Can't push onto a full stack");
+        cout << "Overflow\nProgram Terminated\n";
+        exit(EXIT_FAILURE);
     }
-    else
+
+    cout << "Inserting " << x << endl;
+    arr[++top] = x;
+}
+
+// Utility function to pop a top element from the stack
+char Stack::pop()
+{
+    // check for stack underflow
+    if (isEmpty())
     {
-        top++;
-        stack[top] = i;
+        cout << "Underflow\nProgram Terminated\n";
+        exit(EXIT_FAILURE);
+    }
+
+    cout << "Removing " << peek() << endl;
+
+    // decrease stack size by 1 and (optionally) return the popped element
+    return arr[top--];
+}
+
+// Utility function to return the top element of the stack
+char Stack::peek()
+{
+    if (!isEmpty()) {
+        return arr[top];
+    }
+    else {
+        exit(EXIT_FAILURE);
     }
 }
 
-int Stack::Pop()
-{
-    if (top == -1)
-    {
-        throw underflow_error("Can't pop from an empty stack");
-    }
-    int ret = stack[top];
-    top--;
-    maxsize--;
-
-    return ret;
+// Utility function to return the size of the stack
+int Stack::size() {
+    return top + 1;
 }
 
-int Stack::Top()
-{
-    if (top == -1)
-    {
-        throw underflow_error("Can't pop from an empty stack");
-    }
-    return stack[top];
+// Utility function to check if the stack is empty or not
+bool Stack::isEmpty() {
+    return top == -1;
+}
+
+// Utility function to check if the stack is full or not
+bool Stack::isFull() {
+    return top == capacity - 1;
 }
