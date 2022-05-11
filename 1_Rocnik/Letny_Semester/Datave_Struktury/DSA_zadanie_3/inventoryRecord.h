@@ -1,4 +1,7 @@
 
+#ifndef INVENTORY_RECORD_H
+#define INVENTORY_RECORD_H
+
 #include <string>
 
 class InventoryRecord{
@@ -8,7 +11,7 @@ private:
     float price;
 
 public:
-    enum purchaseTypes {sell, buy};
+    enum purchaseTypes {P, K};
     purchaseTypes purchaseType;
 
     InventoryRecord(int _itemType, int _quantity, float _price, purchaseTypes _purchaseType); // Constructor
@@ -26,3 +29,5 @@ public:
     void SetPurchaseType(purchaseTypes _purchaseType);
     purchaseTypes GetPurchaseType();
 };
+
+#endif
