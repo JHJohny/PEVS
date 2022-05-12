@@ -1,4 +1,6 @@
 
+
+
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
@@ -6,8 +8,10 @@
 
 class Inventory {
 public:
-    Inventory(std::string filePath);
+    Inventory();
     void Start();
+
+    void ConsumeInventoryFile(std::string filePath);
 
 private:
     std::string readedText;

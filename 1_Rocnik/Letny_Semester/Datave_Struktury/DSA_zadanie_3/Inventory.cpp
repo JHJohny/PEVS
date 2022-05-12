@@ -1,18 +1,20 @@
 
+#define FILE_PATH "./Inventory.txt"
+
 #include <string>
 #include <fstream>
 #include <iostream>
 
-#include "Queue.h"
 #include "Inventory.h"
 #include "StringUtils.h"
-#include "InventoryRecord.h"
 
-Inventory::Inventory(std::string filePath) {
-    printFile(filePath);
+Inventory::Inventory() {
+
 }
 
 void Inventory::Start() {
+    ConsumeInventoryFile(FILE_PATH);
+    /*
     Queue<InventoryRecord> inventory = new Queue<InventoryRecord>();
 
     InventoryRecord recordOne = InventoryRecord(1, 12, 33.50, InventoryRecord::K);
@@ -29,6 +31,11 @@ void Inventory::Start() {
     std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
     head = inventory.Dequeue();
     std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
+     */
+}
+
+void Inventory::ConsumeInventoryFile(std::string filePath) {
+    std::cout << "This is file path: " << filePath << std::endl;
 }
 
 void Inventory::printFile(std::string filePath) {
