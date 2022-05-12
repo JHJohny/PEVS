@@ -13,22 +13,22 @@ Inventory::Inventory(std::string filePath) {
 }
 
 void Inventory::Start() {
-    auto inventory = new Queue<InventoryRecord>();
-    /*
+    Queue<InventoryRecord> inventory = new Queue<InventoryRecord>();
+
     InventoryRecord recordOne = InventoryRecord(1, 12, 33.50, InventoryRecord::K);
     InventoryRecord recordTwo = InventoryRecord(2, 4, 12.30, InventoryRecord::K);
     InventoryRecord recordThree = InventoryRecord(1, 6, 33.50, InventoryRecord::P);
     InventoryRecord recordFour = InventoryRecord(2, 2, 12.30, InventoryRecord::P);
 
-    inventory.Push(&recordOne);
-    inventory.Push(&recordTwo);
-    inventory.Push(&recordThree);
-    inventory.Push(&recordFour);
+    inventory.Enqueue(&recordOne);
+    inventory.Enqueue(&recordTwo);
+    inventory.Enqueue(&recordThree);
+    inventory.Enqueue(&recordFour);
 
-    Node<InventoryRecord> head = inventory.GetHead()->GetData();
-
-    std::cout << "head: " << head.GetData()->purchaseType << " price: " << head.GetData()->GetPrice() << " quantity: " << head.GetData()->GetQuantity();
-     */
+    auto head = inventory.Dequeue();
+    std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
+    head = inventory.Dequeue();
+    std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
 }
 
 void Inventory::printFile(std::string filePath) {

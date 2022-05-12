@@ -26,3 +26,6 @@ template<typename T>
 void Node<T>::SetData(T *data) {
     Node::data = data;
 }
+
+template
+class Node<InventoryRecord>;

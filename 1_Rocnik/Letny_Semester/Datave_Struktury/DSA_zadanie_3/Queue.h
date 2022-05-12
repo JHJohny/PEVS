@@ -1,6 +1,7 @@
 
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef DATASTRUCTURES_ZADANIE_3_QUEUE_H
+#define DATASTRUCTURES_ZADANIE_3_QUEUE_H
+
 
 #include "Node.h"
 
@@ -12,13 +13,19 @@ private:
     int size;
     int totalBought;
 public:
-    Queue(); // Constructor
-    Queue(Queue<InventoryRecord> *pQueue); // Copy constructor
+    Queue();
+    Queue(Queue<T> *pQueue); // Copy constructor
 
-    void Push(T* data);
-    T *Pop();
+    void Enqueue(T* data);
+    T *Dequeue();
+
+    // Getters and setters
+    int GetTotalBought() const;
+
+    void SetTotalBought(int totalBought);
 
     int GetSize() const;
+
     void SetSize(int size);
 
     Node<T> *GetHead() const;
@@ -29,5 +36,6 @@ public:
 
     void SetTail(Node<T> *tail);
 };
+
 
 #endif
