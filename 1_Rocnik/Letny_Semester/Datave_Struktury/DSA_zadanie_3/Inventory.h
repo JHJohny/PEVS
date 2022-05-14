@@ -5,18 +5,23 @@
 #define INVENTORY_H
 
 #include <string>
+#include <vector>
+
+#include "Queue.h"
+#include "InventoryRecord.h"
 
 class Inventory {
 public:
     Inventory();
     void Start();
 
-    void ConsumeInventoryFile(std::string filePath);
-
 private:
-    std::string readedText;
+    Queue<InventoryRecord> queOne;
+    Queue<InventoryRecord> queTwo;
+    Queue<InventoryRecord> queThree;
 
-    void printFile(std::string filePath);
+    void ConsumeInventoryFile();
+
 };
 
 #endif

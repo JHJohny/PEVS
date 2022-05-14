@@ -3,7 +3,7 @@
 
 #include "InventoryRecord.h"
 
-InventoryRecord::InventoryRecord(int _itemType, int _quantity, float _price, purchaseTypes _purchaseType) {
+InventoryRecord::InventoryRecord(int _itemType, std::string _purchaseType, int _quantity, double _price) {
     itemType = _itemType;
     quantity = _quantity;
     price = _price;
@@ -14,8 +14,8 @@ int InventoryRecord::GetItemType() {
     return itemType;
 }
 
-void InventoryRecord::SetItemType(int _ItemType) {
-    itemType = _ItemType;
+void InventoryRecord::SetItemType(int _itemType) {
+    itemType = _itemType;
 }
 
 int InventoryRecord::GetQuantity() {
@@ -26,18 +26,18 @@ void InventoryRecord::SetQuantity(int _quantity) {
     quantity = _quantity;
 }
 
-float InventoryRecord::GetPrice() {
+double InventoryRecord::GetPrice()  {
     return price;
 }
 
-void InventoryRecord::SetPrice(float _price) {
+void InventoryRecord::SetPrice(double _price) {
     price = _price;
 }
 
-InventoryRecord::purchaseTypes InventoryRecord::GetPurchaseType() {
+std::string InventoryRecord::GetPurchaseType() {
     return purchaseType;
 }
 
-void InventoryRecord::SetPurchaseType(InventoryRecord::purchaseTypes _purchaseType) {
+void InventoryRecord::SetPurchaseType(char _purchaseType) {
     purchaseType = _purchaseType;
 }
