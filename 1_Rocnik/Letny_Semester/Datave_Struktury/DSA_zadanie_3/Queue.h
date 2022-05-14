@@ -16,7 +16,7 @@ public:
     Queue();
     Queue(Queue<T> *pQueue); // Copy constructor
 
-    void Enqueue(T data);
+    void Enqueue(T *data);
     T *Dequeue();
 
     // Getters and setters

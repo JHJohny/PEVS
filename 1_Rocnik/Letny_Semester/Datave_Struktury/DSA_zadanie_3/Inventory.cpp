@@ -18,33 +18,30 @@ Inventory::Inventory() {
 }
 
 void Inventory::Start() {
+    /*
+    InventoryRecord recordOne = InventoryRecord(1, "K", 12, 35.5);
+    InventoryRecord recordTwo = InventoryRecord(1, "K", 13, 35.5);
+    InventoryRecord recordThr = InventoryRecord(1, "K", 14, 35.5);
+
+    queOne.Enqueue(recordOne);
+    queOne.Enqueue(recordTwo);
+    queOne.Enqueue(recordThr);
+
+    std::cout << "Starting" << std::endl;
+    auto item = queOne.Dequeue();
+    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
+    item = queOne.Dequeue();
+    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
+    */
+
     ConsumeInventoryFile();
 
-    std::cout << "Item " << queOne.GetHead()->GetData()->GetItemType() << " Pur " << queOne.GetHead()->GetData()->GetPurchaseType() << " Quan " << queOne.GetHead()->GetData()->GetQuantity() << std::endl;
-
-    auto item = queOne.GetHead()->GetData();
+    auto item = queOne.Dequeue();
     std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    auto itemTwo = queTwo.GetHead()->GetData();
-    std::cout << "ItemType " << itemTwo->GetItemType() << " PurchaseType " << itemTwo->GetPurchaseType() << " Quantity " << itemTwo->GetQuantity() << " Price " << itemTwo->GetPrice() << std::endl;
-
-    /*
-    Queue<InventoryRecord> inventory = new Queue<InventoryRecord>();
-
-    InventoryRecord recordOne = InventoryRecord(1, 'K', 12, 33.50);
-    InventoryRecord recordTwo = InventoryRecord(2, 'K', 4, 12.30);
-    InventoryRecord recordThree = InventoryRecord(1, 'P', 6, 33.50);
-    InventoryRecord recordFour = InventoryRecord(2, 'P', 2, 12.30);
-
-    inventory.Enqueue(&recordOne);
-    inventory.Enqueue(&recordTwo);
-    inventory.Enqueue(&recordThree);
-    inventory.Enqueue(&recordFour);
-
-    auto head = inventory.Dequeue();
-    std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
-    head = inventory.Dequeue();
-    std::cout << "Head: " << head->purchaseType << " price: " << head->GetPrice() << " quantity: " << head->GetQuantity() << std::endl;
-    */
+    item = queOne.Dequeue();
+    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
+    item = queOne.Dequeue();
+    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
 }
 
 void Inventory::ConsumeInventoryFile() {
@@ -67,7 +64,7 @@ void Inventory::ConsumeInventoryFile() {
         std::string purchaseType = splittedText[1];
         int quantity = std::stoi(splittedText[2]);
         double price = std::stod(splittedText[3]);
-        InventoryRecord record = InventoryRecord(itemType, purchaseType, quantity, price);
+        auto *record = new InventoryRecord(itemType, purchaseType, quantity, price);
 
         std::cout << itemType << " " << purchaseType << " " << quantity << " " << price << std::endl;
 
@@ -82,6 +79,7 @@ void Inventory::ConsumeInventoryFile() {
                 queThree.Enqueue(record);
                 break;
         }
+
     }
 
 }
