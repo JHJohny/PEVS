@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include "Queue.h"
 
 template<typename T>
@@ -18,8 +19,8 @@ Queue<T>::Queue(Queue<T> *pQueue) { // Copy contructor
 };
 
 template<typename T>
-void Queue<T>::Enqueue(T* data) {
-    auto newNode = new Node<T>(data);
+void Queue<T>::Enqueue(T data) {
+    auto newNode = new Node<T>(&data);
     if (this->GetTail() == nullptr) {
         this->SetHead(newNode);
         this->SetTail(newNode);
