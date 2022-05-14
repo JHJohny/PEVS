@@ -18,23 +18,10 @@ Inventory::Inventory() {
 }
 
 void Inventory::Start() {
-    /*
-    InventoryRecord recordOne = InventoryRecord(1, "K", 12, 35.5);
-    InventoryRecord recordTwo = InventoryRecord(1, "K", 13, 35.5);
-    InventoryRecord recordThr = InventoryRecord(1, "K", 14, 35.5);
-
-    queOne.Enqueue(recordOne);
-    queOne.Enqueue(recordTwo);
-    queOne.Enqueue(recordThr);
-
-    std::cout << "Starting" << std::endl;
-    auto item = queOne.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queOne.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    */
-
-    ConsumeInventoryFile();
+    ConsumeInventoryFile(FILE_PATH,
+                         &queOne,
+                         &queTwo,
+                         &queThree);
 
     auto item = queOne.Dequeue();
     std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
@@ -44,11 +31,14 @@ void Inventory::Start() {
     std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
 }
 
-void Inventory::ConsumeInventoryFile() {
+void Inventory::ConsumeInventoryFile(std::string filepath,
+                                     Queue<InventoryRecord> *queOne,
+                                     Queue<InventoryRecord> *queTwo,
+                                     Queue<InventoryRecord> *queThree) {
     // File reading stuff
     std::string line;
     std::ifstream myfile;
-    myfile.open(FILE_PATH);
+    myfile.open(filepath);
 
     // File check stuff
     if(!myfile.is_open()) {
@@ -70,13 +60,13 @@ void Inventory::ConsumeInventoryFile() {
 
         switch (itemType) {
             case 1:
-                queOne.Enqueue(record);
+                queOne->Enqueue(record);
                 break;
             case 2:
-                queTwo.Enqueue(record);
+                queTwo->Enqueue(record);
                 break;
             case 3:
-                queThree.Enqueue(record);
+                queThree->Enqueue(record);
                 break;
         }
 

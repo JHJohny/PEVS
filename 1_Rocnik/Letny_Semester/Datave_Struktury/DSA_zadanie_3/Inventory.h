@@ -20,7 +20,10 @@ private:
     Queue<InventoryRecord> queTwo;
     Queue<InventoryRecord> queThree;
 
-    void ConsumeInventoryFile();
+    void ConsumeInventoryFile(std::string filepath,
+                              Queue<InventoryRecord> *queOne,
+                              Queue<InventoryRecord> *queTwo,
+                              Queue<InventoryRecord> *queThree);
 
 };
 
