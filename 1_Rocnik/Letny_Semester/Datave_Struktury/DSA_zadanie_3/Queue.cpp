@@ -80,15 +80,5 @@ void Queue<T>::SetSize(int size) {
     Queue::size = size;
 }
 
-template<typename T>
-int Queue<T>::GetTotalBought() const {
-    return totalBought;
-}
-
-template<typename T>
-void Queue<T>::SetTotalBought(int totalBought) {
-    Queue::totalBought = totalBought;
-}
-
 template
 class Queue<InventoryRecord>;

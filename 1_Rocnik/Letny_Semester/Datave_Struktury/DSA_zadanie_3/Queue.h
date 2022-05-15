@@ -20,10 +20,6 @@ public:
     T *Dequeue();
 
     // Getters and setters
-    int GetTotalBought() const;
-
-    void SetTotalBought(int totalBought);
-
     int GetSize() const;
 
     void SetSize(int size);

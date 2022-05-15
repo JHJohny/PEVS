@@ -20,6 +20,9 @@ Inventory::Inventory() {
 void Inventory::Start() {
     ConsumeInventoryFile(FILE_PATH);
 
+    Sell();
+
+    std::cout << "something" << std::endl;
 }
 
 void Inventory::PrintInventoryStatistics(Queue<InventoryRecord> *que, bool printSummary) {
@@ -74,6 +77,105 @@ void Inventory::Buy() {
 
 }
 
+void Inventory::Sell() {
+    bool wasPolozkaChoosenCorrectly = false;
+    int polozka;
+    int pocetKS;
+
+    while (!wasPolozkaChoosenCorrectly) {
+        std::cout << "Zadaj polozku, pocet ks:" << std::endl;
+        std::cin >> polozka;
+        std::cin >> pocetKS;
+
+        if(polozka == 1 || polozka == 2 || polozka == 3) {
+            wasPolozkaChoosenCorrectly = true;
+            MakeSellForInventory(polozka, pocetKS);
+        } else {
+            std::cout << "Nespravna polozka, prosim zvol 1 / 2 / 3" << std::endl;
+            polozka = 0;
+        }
+    }
+}
+
+void Inventory::MakeSellForInventory(int polozka, int units) {
+    int unitsRemainingToSell = units;
+    std::map<double, int> invent;
+
+    Queue<InventoryRecord> que;
+    switch (polozka) {
+        case 1:
+            invent = inventoryOneStatus;
+            que = queOne;
+            break;
+        case 2:
+            invent = inventoryTwoStatus;
+            que = queTwo;
+            break;
+        case 3:
+            invent = inventoryThreeStatus;
+            que = queThree;
+            break;
+    }
+
+    auto tempHead = que.GetHead(); // Temp head is required so we can get back once we will loop trough everything
+
+    // Looping trough all nodes
+    while(que.GetHead() != nullptr && unitsRemainingToSell > 0) {
+        auto record = que.GetHead()->GetData();
+        if(record->GetPurchaseType() == "K") {
+            int unitsLeftForThisPrice = invent[record->GetPrice()];
+            int unitsCurrentlySelling = 0;
+
+            if(unitsRemainingToSell == unitsLeftForThisPrice) {
+                unitsCurrentlySelling = unitsRemainingToSell;
+                unitsRemainingToSell = 0;
+            }else if(unitsRemainingToSell > unitsLeftForThisPrice) {
+                unitsCurrentlySelling = unitsLeftForThisPrice;
+                unitsRemainingToSell -= unitsLeftForThisPrice;
+            } else {
+                unitsCurrentlySelling = unitsRemainingToSell;
+                unitsRemainingToSell = 0;
+            }
+
+
+            auto newSaleRecord = new InventoryRecord(polozka, "P", unitsCurrentlySelling, record->GetPrice());
+            que.Enqueue(newSaleRecord);
+
+            UpdateInventoryStatus(InventoryRecord(polozka, "P", unitsCurrentlySelling, record->GetPrice()));
+        }
+
+        que.SetHead(que.GetHead()->GetNext());
+    }
+
+    que.SetHead(tempHead); // Setting head back - so it will looks like it's been never looped torugh
+}
+
+void Inventory::UpdateInventoryStatus(InventoryRecord record) {
+    switch (record.GetItemType()) {
+        case 1:
+            if(record.GetPurchaseType() == "K") {
+                inventoryOneStatus[record.GetPrice()] += record.GetQuantity();
+            } else {
+                inventoryOneStatus[record.GetPrice()] -= record.GetQuantity();
+            }
+            break;
+        case 2:
+            if(record.GetPurchaseType() == "K") {
+                inventoryTwoStatus[record.GetPrice()] += record.GetQuantity();
+            } else {
+                inventoryTwoStatus[record.GetPrice()] -= record.GetQuantity();
+            }
+            break;
+        case 3:
+            if(record.GetPurchaseType() == "K") {
+                inventoryThreeStatus[record.GetPrice()] += record.GetQuantity();
+            } else {
+                inventoryThreeStatus[record.GetPrice()] -= record.GetQuantity();
+            }
+            break;
+    }
+}
+
 void Inventory::ConsumeInventoryFile(std::string filepath) {
     // File reading stuff
     std::string line;
@@ -96,6 +198,7 @@ void Inventory::ConsumeInventoryFile(std::string filepath) {
         double price = std::stod(splittedText[3]);
         auto *record = new InventoryRecord(itemType, purchaseType, quantity, price);
 
+        UpdateInventoryStatus(InventoryRecord(itemType, purchaseType, quantity, price));
         //std::cout << itemType << " " << purchaseType << " " << quantity << " " << price << std::endl;
 
         switch (itemType) {
