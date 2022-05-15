@@ -35,6 +35,7 @@ private:
     void Sell();
     void MakeSellForInventory(int polozka, int units);
     void UpdateInventoryStatus(InventoryRecord record);
+    void PrintGeneralStatistics();
 };
 
 #endif

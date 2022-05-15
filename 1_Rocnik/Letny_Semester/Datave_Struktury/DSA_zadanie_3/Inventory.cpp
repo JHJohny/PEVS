@@ -20,23 +20,29 @@ Inventory::Inventory() {
 void Inventory::Start() {
     ConsumeInventoryFile(FILE_PATH);
 
-    Sell();
+    PrintGeneralStatistics();
 
     std::cout << "something" << std::endl;
 }
 
 void Inventory::PrintInventoryStatistics(Queue<InventoryRecord> *que, bool printSummary) {
     auto tempHead = que->GetHead(); // Temp head is required so we can get back once we will loop trough everything
+    double summary = 0;
+
+    std::cout << "Item " << que->GetHead()->GetData()->GetItemType() << std::endl;
 
     // Looping trough all nodes
     while(que->GetHead() != nullptr) {
+        summary += (que->GetHead()->GetData()->GetQuantity() * que->GetHead()->GetData()->GetPrice());
         std::cout << que->GetHead()->GetData()->GetQuantity() << " units - " << que->GetHead()->GetData()->GetPrice() << " EUR" << std::endl;
         que->SetHead(que->GetHead()->GetNext());
     }
 
-    que->SetHead(tempHead); // Setting head back - so it will looks like it's been never looped torugh
+    if(printSummary) {
+        std::cout << "Sumar - " << summary << std::endl;
+    }
 
-    // TODO - make summary feature
+    que->SetHead(tempHead); // Setting head back - so it will looks like it's been never looped torugh
 }
 
 void Inventory::Buy() {
@@ -52,6 +58,8 @@ void Inventory::Buy() {
         std::cin >> pocetKs;
         std::cin >> cena;
         auto *record = new InventoryRecord(polozka, "K", pocetKs, cena);
+
+        UpdateInventoryStatus(InventoryRecord(polozka, "K", pocetKs, cena));
 
         // Because we have only 3 polozky
         switch (polozka) {
@@ -174,6 +182,15 @@ void Inventory::UpdateInventoryStatus(InventoryRecord record) {
             }
             break;
     }
+}
+
+void Inventory::PrintGeneralStatistics() {
+    PrintInventoryStatistics(&queOne, true);
+    std::cout << std::endl;
+    PrintInventoryStatistics(&queTwo, true);
+    std::cout << std::endl;
+    PrintInventoryStatistics(&queThree, true);
+    std::cout << std::endl;
 }
 
 void Inventory::ConsumeInventoryFile(std::string filepath) {
