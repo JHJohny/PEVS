@@ -19,12 +19,81 @@ Inventory::Inventory() {
     queThree = new Queue<InventoryRecord>;
 }
 
-void Inventory::Start() {
-    ConsumeInventoryFile(FILE_PATH_INPUT);
+[[noreturn]] void Inventory::Start() {
+    char usersChoice;
 
-    WriteInventoryToFile(FILE_PATH_OUTPUT);
+    std::cout << "<i>nventar ..... vypíš inventár pre číslo položky\n"
+                 "<k>up .......... nákup X kusov pre číslo položky\n"
+                 "<p>redaj ....... predaj X kusov pre číslo položky\n"
+                 "<n>acitaj ...... načítaj inventár zo súboru\n"
+                 "<s>tatistika ... vypíš štatistiku zbožia\n"
+                 "<w>rite ........ zapíš inventár do súboru\n"
+                 "<e>exit ........ ukončiť program\n";
+    std::cout.flush();
 
-    std::cout << "something" << std::endl;
+    while (true) {
+        scanf("%c", &usersChoice);
+        switch (usersChoice) {
+            case 'i':
+                if(wasInventoryAlreadyLoaded){
+                    PrintInventoryUserInput();
+                }else
+                {
+                    std::cout << "Najprv nacitaj inventar zo suboru!" << std::endl;
+                }
+                break;
+            case 'k':
+                Buy();
+                break;
+            case 'p':
+                if(wasInventoryAlreadyLoaded){
+                    Sell();
+                }else
+                {
+                    std::cout << "Najprv nacitaj inventar zo suboru!" << std::endl;
+                }
+                break;
+            case 'n':
+                ConsumeInventoryFile(FILE_PATH_INPUT);
+                break;
+            case 's':
+                if(wasInventoryAlreadyLoaded){
+                    PrintGeneralStatistics();
+                }else
+                {
+                    std::cout << "Najprv nacitaj inventar zo suboru!" << std::endl;
+                }
+                break;
+            case 'w':
+                if(wasInventoryAlreadyLoaded){
+                    WriteInventoryToFile(FILE_PATH_OUTPUT);
+                }else
+                {
+                    std::cout << "Najprv nacitaj inventar zo suboru!" << std::endl;
+                }
+                break;
+            case 'e':
+                exit(EXIT_SUCCESS);
+        }
+    }
+}
+
+void Inventory::PrintInventoryUserInput() {
+    int polozka;
+    std::cout << "Pre ktoru polozku: ";
+    std::cin >> polozka;
+
+    switch (polozka) {
+        case 1:
+            PrintInventoryStatistics(&queOne, false);
+            break;
+        case 2:
+            PrintInventoryStatistics(&queTwo, false);
+            break;
+        case 3:
+            PrintInventoryStatistics(&queThree, false);
+            break;
+    }
 }
 
 void Inventory::PrintInventoryStatistics(Queue<InventoryRecord> *que, bool printSummary) {
@@ -85,6 +154,7 @@ void Inventory::Buy() {
         }
     }
 
+    std::cout << "Nakup prebehol OK" << std::endl;
 }
 
 void Inventory::Sell() {
@@ -127,6 +197,18 @@ void Inventory::MakeSellForInventory(int polozka, int units) {
             break;
     }
 
+    //Checking if there is enough supply
+    int totalUnitAvailable = 0;
+    for (auto const& x : invent)
+    {
+        totalUnitAvailable += x.second;
+    }
+
+    if(totalUnitAvailable < units) {
+        std::cout << "Tolko polozok sa v inventary ani nenachadza na predaj";
+        return;
+    }
+
     auto tempHead = que.GetHead(); // Temp head is required so we can get back once we will loop trough everything
 
     // Looping trough all nodes
@@ -136,10 +218,10 @@ void Inventory::MakeSellForInventory(int polozka, int units) {
             int unitsLeftForThisPrice = invent[record->GetPrice()];
             int unitsCurrentlySelling = 0;
 
-            if(unitsRemainingToSell == unitsLeftForThisPrice) {
+            if (unitsRemainingToSell == unitsLeftForThisPrice) {
                 unitsCurrentlySelling = unitsRemainingToSell;
                 unitsRemainingToSell = 0;
-            }else if(unitsRemainingToSell > unitsLeftForThisPrice) {
+            } else if (unitsRemainingToSell > unitsLeftForThisPrice) {
                 unitsCurrentlySelling = unitsLeftForThisPrice;
                 unitsRemainingToSell -= unitsLeftForThisPrice;
             } else {
@@ -147,7 +229,7 @@ void Inventory::MakeSellForInventory(int polozka, int units) {
                 unitsRemainingToSell = 0;
             }
 
-
+            std::cout << "Uspesne sa predala polozka " << polozka << " za cenu " << record->GetPrice() << " pocet kusov - " << unitsCurrentlySelling << std::endl;
             auto newSaleRecord = new InventoryRecord(polozka, "P", unitsCurrentlySelling, record->GetPrice());
             que.Enqueue(newSaleRecord);
 
@@ -204,7 +286,7 @@ void Inventory::ConsumeInventoryFile(std::string filepath) {
     // File check stuff
     if(!myfile.is_open()) {
         perror("Subor sa nepodarilo otvorit!");
-        exit(EXIT_FAILURE);
+        return;
     }
 
     // Actuall que filling
@@ -233,6 +315,8 @@ void Inventory::ConsumeInventoryFile(std::string filepath) {
 
     }
 
+    std::cout << "Nacitanie prebehlo v poriadku" << std::endl;
+    wasInventoryAlreadyLoaded = true;
 }
 
 void Inventory::WriteInventoryToFile(std::string outputFile) {
@@ -242,12 +326,17 @@ void Inventory::WriteInventoryToFile(std::string outputFile) {
     outputString += GetInventoryInString(queTwo);
     outputString += GetInventoryInString(queThree);
 
-    std::cout << outputString << std::endl;
-
     std::ofstream file;
     file.open(outputFile);
+
+    if(!file.is_open()) {
+        perror("Do suboru sa nezapisu bohuzial ziadne data");
+    }
+
     file << outputString;
     file.close();
+
+    std::cout << "Zapisanie prebehlo v poriadku" << std::endl;
 }
 
 std::string Inventory::GetInventoryInString(Queue<InventoryRecord> que) {
