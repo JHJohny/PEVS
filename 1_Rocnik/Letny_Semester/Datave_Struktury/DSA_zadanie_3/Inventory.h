@@ -20,11 +20,12 @@ private:
     Queue<InventoryRecord> queTwo;
     Queue<InventoryRecord> queThree;
 
-    void ConsumeInventoryFile(std::string filepath,
-                              Queue<InventoryRecord> *queOne,
-                              Queue<InventoryRecord> *queTwo,
-                              Queue<InventoryRecord> *queThree);
+    void ConsumeInventoryFile(std::string filepath);
 
+    void PrintInventoryStatistics(Queue<InventoryRecord> *queOne,
+                                  bool printSummary= false);
+
+    void Buy();
 };
 
 #endif

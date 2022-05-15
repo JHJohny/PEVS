@@ -18,40 +18,63 @@ Inventory::Inventory() {
 }
 
 void Inventory::Start() {
-    ConsumeInventoryFile(FILE_PATH,
-                         &queOne,
-                         &queTwo,
-                         &queThree);
-
-    /*
-    auto item = queOne.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queOne.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queOne.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-
-    item = queTwo.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queTwo.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queTwo.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-
-    item = queThree.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queThree.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    item = queThree.Dequeue();
-    std::cout << "ItemType " << item->GetItemType() << " PurchaseType " << item->GetPurchaseType() << " Quantity " << item->GetQuantity() << " Price " << item->GetPrice() << std::endl;
-    */
+    ConsumeInventoryFile(FILE_PATH);
 
 }
 
-void Inventory::ConsumeInventoryFile(std::string filepath,
-                                     Queue<InventoryRecord> *queOne,
-                                     Queue<InventoryRecord> *queTwo,
-                                     Queue<InventoryRecord> *queThree) {
+void Inventory::PrintInventoryStatistics(Queue<InventoryRecord> *que, bool printSummary) {
+    auto tempHead = que->GetHead(); // Temp head is required so we can get back once we will loop trough everything
+
+    // Looping trough all nodes
+    while(que->GetHead() != nullptr) {
+        std::cout << que->GetHead()->GetData()->GetQuantity() << " units - " << que->GetHead()->GetData()->GetPrice() << " EUR" << std::endl;
+        que->SetHead(que->GetHead()->GetNext());
+    }
+
+    que->SetHead(tempHead); // Setting head back - so it will looks like it's been never looped torugh
+
+    // TODO - make summary feature
+}
+
+void Inventory::Buy() {
+    bool wasPolozkaChoosenCorrectly = false;
+    int polozka;
+    int pocetKs;
+    float cena;
+
+    // Getting the users input
+    while(!wasPolozkaChoosenCorrectly) {
+        std::cout << "Zadaj polozku, pocet ks, cenu:" << std::endl;
+        std::cin >> polozka;
+        std::cin >> pocetKs;
+        std::cin >> cena;
+        auto *record = new InventoryRecord(polozka, "K", pocetKs, cena);
+
+        // Because we have only 3 polozky
+        switch (polozka) {
+            case 1:
+                wasPolozkaChoosenCorrectly = true;
+                queOne.Enqueue(record);
+                break;
+            case 2:
+                wasPolozkaChoosenCorrectly = true;
+                queTwo.Enqueue(record);
+                break;
+            case 3:
+                wasPolozkaChoosenCorrectly = true;
+                queThree.Enqueue(record);
+                break;
+            default:
+                std::cout << "Nespravna polozka, prosim zvol 1 / 2 / 3" << std::endl;
+                polozka = 0;
+                pocetKs = 0;
+                cena = 0.0;
+        }
+    }
+
+}
+
+void Inventory::ConsumeInventoryFile(std::string filepath) {
     // File reading stuff
     std::string line;
     std::ifstream myfile;
@@ -73,17 +96,17 @@ void Inventory::ConsumeInventoryFile(std::string filepath,
         double price = std::stod(splittedText[3]);
         auto *record = new InventoryRecord(itemType, purchaseType, quantity, price);
 
-        std::cout << itemType << " " << purchaseType << " " << quantity << " " << price << std::endl;
+        //std::cout << itemType << " " << purchaseType << " " << quantity << " " << price << std::endl;
 
         switch (itemType) {
             case 1:
-                queOne->Enqueue(record);
+                queOne.Enqueue(record);
                 break;
             case 2:
-                queTwo->Enqueue(record);
+                queTwo.Enqueue(record);
                 break;
             case 3:
-                queThree->Enqueue(record);
+                queThree.Enqueue(record);
                 break;
         }
 
