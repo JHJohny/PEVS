@@ -26,16 +26,15 @@ private:
     std::map<double, int> inventoryTwoStatus;
     std::map<double, int> inventoryThreeStatus;
 
-    void ConsumeInventoryFile(std::string filepath);
-
-    void PrintInventoryStatistics(Queue<InventoryRecord> *queOne,
-                                  bool printSummary= false);
-
     void Buy();
     void Sell();
+    void ConsumeInventoryFile(std::string filepath);
+    void PrintGeneralStatistics();
+    void PrintInventoryStatistics(Queue<InventoryRecord> *queOne, bool printSummary= false);
     void MakeSellForInventory(int polozka, int units);
     void UpdateInventoryStatus(InventoryRecord record);
-    void PrintGeneralStatistics();
+    void WriteInventoryToFile(std::string outputFile);
+    std::string GetInventoryInString(Queue<InventoryRecord> que);
 };
 
 #endif

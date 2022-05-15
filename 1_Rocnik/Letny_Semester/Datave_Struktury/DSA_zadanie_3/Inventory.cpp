@@ -1,10 +1,12 @@
 
-#define FILE_PATH "./Inventory.txt"
+#define FILE_PATH_INPUT "./Inventory.txt"
+#define FILE_PATH_OUTPUT "./Output.txt"
 
 #include <vector>
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 
 #include "Queue.h"
 #include "Inventory.h"
@@ -18,9 +20,9 @@ Inventory::Inventory() {
 }
 
 void Inventory::Start() {
-    ConsumeInventoryFile(FILE_PATH);
+    ConsumeInventoryFile(FILE_PATH_INPUT);
 
-    PrintGeneralStatistics();
+    WriteInventoryToFile(FILE_PATH_OUTPUT);
 
     std::cout << "something" << std::endl;
 }
@@ -216,7 +218,6 @@ void Inventory::ConsumeInventoryFile(std::string filepath) {
         auto *record = new InventoryRecord(itemType, purchaseType, quantity, price);
 
         UpdateInventoryStatus(InventoryRecord(itemType, purchaseType, quantity, price));
-        //std::cout << itemType << " " << purchaseType << " " << quantity << " " << price << std::endl;
 
         switch (itemType) {
             case 1:
@@ -232,4 +233,40 @@ void Inventory::ConsumeInventoryFile(std::string filepath) {
 
     }
 
+}
+
+void Inventory::WriteInventoryToFile(std::string outputFile) {
+    std::string outputString;
+
+    outputString += GetInventoryInString(queOne);
+    outputString += GetInventoryInString(queTwo);
+    outputString += GetInventoryInString(queThree);
+
+    std::cout << outputString << std::endl;
+
+    std::ofstream file;
+    file.open(outputFile);
+    file << outputString;
+    file.close();
+}
+
+std::string Inventory::GetInventoryInString(Queue<InventoryRecord> que) {
+
+    std::string outputString;
+
+    auto tempHeadOne = que.GetHead(); // Temp head is required so we can get back once we will loop trough everything
+    while(que.GetHead() != nullptr) {
+        outputString += std::to_string(que.GetHead()->GetData()->GetItemType());
+        outputString += " ";
+        outputString += que.GetHead()->GetData()->GetPurchaseType();
+        outputString += " ";
+        outputString += std::to_string(que.GetHead()->GetData()->GetQuantity());
+        outputString += " ";
+        outputString += std::to_string(que.GetHead()->GetData()->GetPrice());
+        outputString += "\n";
+        que.SetHead(que.GetHead()->GetNext());
+    }
+    que.SetHead(tempHeadOne); // Setting head back - so it will looks like it's been never looped torugh
+
+    return outputString;
 }
