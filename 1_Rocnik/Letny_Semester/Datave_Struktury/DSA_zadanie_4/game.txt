@@ -1,0 +1,7 @@
+Je to cicavec? 1
+Je to domace zviera? 2
+Je to macka? 4
+Zije v lese? 5
+Je to medved? 10
+Je to ryba? 3
+Je to kapor? 6
