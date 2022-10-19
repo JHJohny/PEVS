@@ -1,4 +1,5 @@
 import java.io.File;
+import java.nio.file.Paths;
 
 enum filterType {
     VOICE, INTERNET, UZERNIK, MOBILE //Uzernik stands for someone who doesn't pay bills - therefore we send an uzernik at him
@@ -9,7 +10,7 @@ class CLIParser {
     private filterType filterType;
 
     public CLIParser (String _argOne, String _argTwo) throws Exception {
-        if (!isFileNameOK(_argOne) && !isFilterOK(_argTwo)) {
+        if (!isFileNameOK(_argOne) || !isFilterOK(_argTwo)) {
             throw new Exception("Arguments are not OK!");
         }
     }
@@ -26,9 +27,16 @@ class CLIParser {
             return false;
         }
 
-        //Checking if file exists and if it's file and not directory
-        File file = new File(_fileName);
-        if (!file.exists() || !file.isFile()) {
+        File file = new File("./" + _fileName);
+        //Checking if filename is file and not directory
+        if (file.isDirectory()) {
+            System.out.println("Filename is a directory, not file! " + file.getName());
+            return false;
+        }
+
+        //Checking if the file exists
+        if (!file.exists()) {
+            System.out.println("Subor neexistuje, prosim vytvor alebo presun subor do adresara projektu!");
             return false;
         }
 
@@ -81,7 +89,12 @@ class CLIParser {
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        CLIParser cliParser = new CLIParser(args[0], args[1]);
+        try {
+            CLIParser cliParser = new CLIParser(args[0], args[1]);
+        }catch (Exception ex){
+            throw new Exception("Arguments are not OK!");
+        }
+
         System.out.println("Yay it went trough");
     }
 }
