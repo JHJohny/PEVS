@@ -1,5 +1,6 @@
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 enum filterType {
     VOICE, INTERNET, UZERNIK, MOBILE //Uzernik stands for someone who doesn't pay bills - therefore we send an uzernik at him
@@ -87,14 +88,28 @@ class CLIParser {
     public filterType getFilterType() { return filterType; }
 }
 
+class ZakaznickyZoznam {
+
+    private File file;
+
+    public ZakaznickyZoznam (String _file) throws Exception {
+        file = new File(_file);
+        Scanner reader = new Scanner(file);
+
+        //Handling if the file is already opened somewhere
+        if (!file.canRead()) { throw new Exception("Subor nie je momentalne citatelny! Prosim uzatvor ho v druhom programe"); }
+
+        while (reader.hasNextLine()) {
+            String line = reader.nextLine();
+        }
+    }
+
+}
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        try {
-            CLIParser cliParser = new CLIParser(args[0], args[1]);
-        }catch (Exception ex){
-            throw new Exception("Arguments are not OK!");
-        }
-
+        CLIParser cliParser = new CLIParser(args[0], args[1]);
+        ZakaznickyZoznam customerList = new ZakaznickyZoznam(cliParser.getFileName());
         System.out.println("Yay it went trough");
     }
 }
