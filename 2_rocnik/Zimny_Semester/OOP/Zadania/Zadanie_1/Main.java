@@ -1,5 +1,8 @@
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.AbstractList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 enum filterType {
@@ -88,28 +91,127 @@ class CLIParser {
     public filterType getFilterType() { return filterType; }
 }
 
+class ZakaznikovUdaj {
+
+    private String customerName;
+    private String contactNumber;
+    private boolean voiceServicePurchased;
+    private boolean internetServicePurchased;
+    private int balance;
+
+    enum paymentTypes {kredit, pausal}
+    private paymentTypes paymentType;
+    enum phoneTypes {mobile, fixedLine}
+    private phoneTypes phoneType;
+
+    public ZakaznikovUdaj (String _line) {
+        String[] records = _line.split(",");
+
+        customerName = records[0];
+        contactNumber = records[1];
+
+        if (contactNumber.charAt(1) == '2') {
+            phoneType = phoneTypes.fixedLine;
+        } else {
+            phoneType = phoneTypes.mobile;
+        }
+
+        voiceServicePurchased = !Objects.equals(records[2], "");
+        internetServicePurchased = !Objects.equals(records[3], "");
+
+        if (Objects.equals(records[4], "kredit")) {
+            paymentType = paymentTypes.kredit;
+        } else {
+            paymentType = paymentTypes.pausal;
+        }
+
+        balance = Integer.parseInt(records[5]);
+    }
+
+    public boolean hasCustomerVoiceServicePurchased () { return voiceServicePurchased; }
+    public boolean hasCustomerInternetServicePurchased () { return internetServicePurchased; }
+    public int getCustomerBalance () { return balance; }
+    public phoneTypes getCustomerPhoneType () { return phoneType; }
+
+    public void printFormatedRecord () {
+        System.out.println("" + customerName + "\t\t" + contactNumber + "\t" + balance);
+    }
+}
+
 class ZakaznickyZoznam {
 
     private File file;
-
+    private ZakaznikovUdaj[] zakaznici;
     public ZakaznickyZoznam (String _file) throws Exception {
         file = new File(_file);
-        Scanner reader = new Scanner(file);
+        Scanner reader;
+        int count = 0;
 
         //Handling if the file is already opened somewhere
         if (!file.canRead()) { throw new Exception("Subor nie je momentalne citatelny! Prosim uzatvor ho v druhom programe"); }
 
+        //Counting the lines
+        reader = new Scanner(file);
         while (reader.hasNextLine()) {
             String line = reader.nextLine();
+            count++;
+        }
+        zakaznici = new ZakaznikovUdaj[count];
+        count = 0;
+
+        //Getting the actual records
+        reader = new Scanner(file);
+        while (reader.hasNextLine()) {
+            String line = reader.nextLine();
+            ZakaznikovUdaj udaj = new ZakaznikovUdaj(line);
+
+            zakaznici[count] = udaj;
+
+            count++;
         }
     }
 
+    public void printZakazniciFormatted (filterType _filterType) {
+
+        switch (_filterType) {
+            case INTERNET:
+                for (ZakaznikovUdaj zakaznikovUdaj : zakaznici) {
+                    if (zakaznikovUdaj.hasCustomerInternetServicePurchased()) {
+                        zakaznikovUdaj.printFormatedRecord();
+                    }
+                }
+                break;
+            case MOBILE:
+                for (ZakaznikovUdaj zakaznikovUdaj : zakaznici) {
+                    if (zakaznikovUdaj.getCustomerPhoneType() == ZakaznikovUdaj.phoneTypes.mobile) {
+                        zakaznikovUdaj.printFormatedRecord();
+                    }
+                }
+                break;
+            case UZERNIK:
+                for (ZakaznikovUdaj zakaznikovUdaj : zakaznici) {
+                    if (zakaznikovUdaj.getCustomerBalance() < 0) {
+                        zakaznikovUdaj.printFormatedRecord();
+                    }
+                }
+                break;
+            case VOICE:
+                for (ZakaznikovUdaj zakaznikovUdaj : zakaznici) {
+                    if (zakaznikovUdaj.hasCustomerVoiceServicePurchased()) {
+                        zakaznikovUdaj.printFormatedRecord();
+                    }
+                }
+                break;
+        }
+
+    }
 }
 
 public class Main {
     public static void main(String[] args) throws Exception {
         CLIParser cliParser = new CLIParser(args[0], args[1]);
         ZakaznickyZoznam customerList = new ZakaznickyZoznam(cliParser.getFileName());
-        System.out.println("Yay it went trough");
+
+        customerList.printZakazniciFormatted(cliParser.getFilterType());
     }
 }
