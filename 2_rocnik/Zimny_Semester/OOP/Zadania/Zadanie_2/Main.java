@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.*;
 import java.util.Date;
 import java.util.PriorityQueue;
@@ -113,7 +115,12 @@ class FIKTIVsroSoftware {
         }
 
         // TODO - do the rest
-
+        try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println("This is the line --- " + line);
+            }
+        }
     }
 
     public void LoadNewFile (String _filePath) throws Exception {
@@ -133,8 +140,7 @@ class FileUtils {
 }
 
 public class Main {
-    public static void main(String[] args)
-    {
-
+    public static void main(String[] args) throws Exception {
+        FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
     }
 }
