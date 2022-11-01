@@ -108,27 +108,48 @@ class TaskComparator implements Comparator<Task>{
 class FIKTIVsroSoftware {
 
     private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
+    private TaskParser parser;
+
+    public FIKTIVsroSoftware (String _filePath, String _configFilePath) throws Exception {
+        parser = new TaskParser(_configFilePath);
+        ConsumeTheFile(_filePath);
+    }
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
-        if (!FileUtils.DoesFileExist(_filePath)) {
-            throw new Exception("File cannot be found!");
-        }
-
-        // TODO - do the rest
-        try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println("This is the line --- " + line);
-            }
-        }
+        parser = new TaskParser("./config.json");
+        ConsumeTheFile(_filePath);
     }
 
     public void LoadNewFile (String _filePath) throws Exception {
+        ConsumeTheFile(_filePath);
+    }
+
+    private void ConsumeTheFile (String _filePath) throws Exception {
         if (!FileUtils.DoesFileExist(_filePath)) {
             throw new Exception("File cannot be found!");
         }
 
-        // TODO - load file
+        try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                queue.add(parser.getTaskFromLine());
+            }
+        }
+    }
+}
+
+class TaskParser {
+
+    public TaskParser (String _configFilePath) throws Exception {
+        if (!FileUtils.DoesFileExist(_configFilePath)) {
+            throw new Exception("File cannot be found!");
+        }
+
+        // TODO - load config variables
+    }
+
+    public <T extends FIKTIVTask> T getTaskFromLine () {
+        // TODO - return one of the tasks
     }
 }
 
