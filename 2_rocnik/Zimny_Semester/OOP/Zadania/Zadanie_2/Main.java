@@ -161,24 +161,10 @@ class TaskParser {
         String[] ADMINISTRATIVE_TASK_REGEXES = config.properties.getProperty("ADMINISTRATIVE_TASK_REGEXES").split(",");
         String[] COMPLAINT_TASK_REGEXES = config.properties.getProperty("COMPLAINT_TASK_REGEXES").split(",");
 
-        for (String administrative_task_regex : ADMINISTRATIVE_TASK_REGEXES) {
-            Pattern pattern = Pattern.compile(administrative_task_regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(_string);
-
-            if (matcher.find()) {
-                return TaskTypes.administrative;
-            }
-        }
-
-        for (String administrative_task_regex : COMPLAINT_TASK_REGEXES) {
-            Pattern pattern = Pattern.compile(administrative_task_regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(_string);
-
-            if (matcher.find()) {
-                return TaskTypes.complaint;
-            }
-        }
-
+        if (RegexUtils.IsMatched(ADMINISTRATIVE_TASK_REGEXES, _string))
+            return TaskTypes.administrative;
+        if (RegexUtils.IsMatched(COMPLAINT_TASK_REGEXES, _string))
+            return TaskTypes.complaint;
         throw new Exception("Task could not be found!");
     }
 }
@@ -187,6 +173,22 @@ class FileUtils {
     static boolean DoesFileExist(String _filePath) {
         File file = new File(_filePath);
         return file.exists() && !file.isDirectory();
+    }
+}
+
+class RegexUtils {
+
+    static boolean IsMatched (String[] patterns, String _string) {
+        for (String _pattern : patterns) {
+            Pattern pattern = Pattern.compile(_pattern, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(_string);
+
+            if (matcher.find()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
