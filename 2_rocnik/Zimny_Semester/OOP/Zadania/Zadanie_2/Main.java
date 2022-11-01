@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.*;
 import java.util.Date;
 import java.util.PriorityQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 interface Task {
     public void TakeOverTheTask(); //The task is now being handled by user
@@ -75,7 +77,7 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
 
     @Override
     public Date getCreationDate() {
-        System.out.println("Subclass");
+        //System.out.println("Subclass");
         return super.getCreationDate(); //TODO do summary
     }
 }
@@ -109,15 +111,9 @@ class TaskComparator implements Comparator<Task>{
 class FIKTIVsroSoftware {
 
     private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
-    private TaskParser parser;
-
-    public FIKTIVsroSoftware (String _filePath, String _configFilePath) throws Exception {
-        parser = new TaskParser(_configFilePath);
-        ConsumeTheFile(_filePath);
-    }
+    private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
-        parser = new TaskParser("./config.ini");
         ConsumeTheFile(_filePath);
     }
 
@@ -141,19 +137,49 @@ class FIKTIVsroSoftware {
 }
 
 class TaskParser {
-
-    public TaskParser (String _configFilePath) throws Exception {
-        if (!FileUtils.DoesFileExist(_configFilePath)) {
-            throw new Exception("File cannot be found!");
-        }
-
-        // TODO - load config variables
-    }
-
-    public <T extends FIKTIVTask> T getTaskFromLine (String _line) {
+    private enum TaskTypes { administrative, complaint}
+    private Properties properties = new Properties();
+    public <T extends FIKTIVTask> T getTaskFromLine (String _line) throws Exception {
         System.out.println("This is the line " + _line);
 
-        return (T) new AdministrationTask("", new Date(), false);
+        String[] lineValues = _line.split(",");
+
+        System.out.println("This is the task type " + getTaskType(lineValues[0]));
+
+        switch (getTaskType(lineValues[0])) {
+            case complaint:
+                return (T) new ComplaintTask("", new Date(), false);
+            case administrative:
+                return (T) new AdministrationTask("", new Date(), false);
+            default:
+                throw new Exception("The task could not be recognized");
+        }
+    }
+
+    private TaskTypes getTaskType (String _string) throws Exception {
+        Config config = Config.getConfig();
+        String[] ADMINISTRATIVE_TASK_REGEXES = config.properties.getProperty("ADMINISTRATIVE_TASK_REGEXES").split(",");
+        String[] COMPLAINT_TASK_REGEXES = config.properties.getProperty("COMPLAINT_TASK_REGEXES").split(",");
+
+        for (String administrative_task_regex : ADMINISTRATIVE_TASK_REGEXES) {
+            Pattern pattern = Pattern.compile(administrative_task_regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(_string);
+
+            if (matcher.find()) {
+                return TaskTypes.administrative;
+            }
+        }
+
+        for (String administrative_task_regex : COMPLAINT_TASK_REGEXES) {
+            Pattern pattern = Pattern.compile(administrative_task_regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(_string);
+
+            if (matcher.find()) {
+                return TaskTypes.complaint;
+            }
+        }
+
+        throw new Exception("Task could not be found!");
     }
 }
 
@@ -164,12 +190,26 @@ class FileUtils {
     }
 }
 
+class Config {
+    private static Config config_instance = null;
+
+    Properties properties = new Properties();
+
+    private Config () throws IOException {
+        properties.load(Config.class.getResourceAsStream("config.ini"));
+    }
+
+    public static Config getConfig() throws IOException {
+        if (config_instance == null)
+            config_instance = new Config();
+
+        return config_instance;
+    }
+}
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = new Date();
 
-        System.out.println(formatter.format(date));
-        //FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
+        FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
     }
 }
