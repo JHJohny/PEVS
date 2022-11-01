@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 import java.util.PriorityQueue;
@@ -116,7 +117,7 @@ class FIKTIVsroSoftware {
     }
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
-        parser = new TaskParser("./config.json");
+        parser = new TaskParser("./config.ini");
         ConsumeTheFile(_filePath);
     }
 
@@ -132,10 +133,11 @@ class FIKTIVsroSoftware {
         try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                queue.add(parser.getTaskFromLine());
+                queue.add(parser.getTaskFromLine(line));
             }
         }
     }
+
 }
 
 class TaskParser {
@@ -148,8 +150,10 @@ class TaskParser {
         // TODO - load config variables
     }
 
-    public <T extends FIKTIVTask> T getTaskFromLine () {
-        // TODO - return one of the tasks
+    public <T extends FIKTIVTask> T getTaskFromLine (String _line) {
+        System.out.println("This is the line " + _line);
+
+        return (T) new AdministrationTask("", new Date(), false);
     }
 }
 
@@ -162,6 +166,10 @@ class FileUtils {
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+
+        System.out.println(formatter.format(date));
+        //FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
     }
 }
