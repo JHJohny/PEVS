@@ -161,9 +161,9 @@ class TaskParser {
         String[] ADMINISTRATIVE_TASK_REGEXES = config.properties.getProperty("ADMINISTRATIVE_TASK_REGEXES").split(",");
         String[] COMPLAINT_TASK_REGEXES = config.properties.getProperty("COMPLAINT_TASK_REGEXES").split(",");
 
-        if (RegexUtils.IsMatched(ADMINISTRATIVE_TASK_REGEXES, _string))
+        if (RegexUtils.FindMatch(ADMINISTRATIVE_TASK_REGEXES, _string) != null)
             return TaskTypes.administrative;
-        if (RegexUtils.IsMatched(COMPLAINT_TASK_REGEXES, _string))
+        if (RegexUtils.FindMatch(COMPLAINT_TASK_REGEXES, _string) != null)
             return TaskTypes.complaint;
         throw new Exception("Task could not be found!");
     }
@@ -176,7 +176,7 @@ class TaskParser {
 
         date = DateUtils.FindDate(DATE_FORMATS, _string);
 
-        if (RegexUtils.IsMatched(DATE_FORMAT_LINUX_REGEX, _string))
+        if (RegexUtils.FindMatch(DATE_FORMAT_LINUX_REGEX, _string) != null)
             date = new Date(Long.parseLong(_string) * 1000L);
 
         if (date == null)
@@ -195,18 +195,17 @@ class FileUtils {
 }
 
 class RegexUtils {
-
-    static boolean IsMatched (String[] patterns, String _string) {
+    static String FindMatch (String[] patterns, String _string) {
         for (String _pattern : patterns) {
             Pattern pattern = Pattern.compile(_pattern, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(_string);
 
             if (matcher.find()) {
-                return true;
+                return matcher.group();
             }
         }
 
-        return false;
+        return null;
     }
 }
 
