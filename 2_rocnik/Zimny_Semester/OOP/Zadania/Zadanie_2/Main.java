@@ -132,6 +132,8 @@ class FIKTIVsroSoftware {
             while ((line = br.readLine()) != null) {
                 queue.add(parser.getTaskFromLine(line));
             }
+
+            queue.size();
         }
     }
 
@@ -149,9 +151,9 @@ class TaskParser {
 
         switch (getTaskType(lineValues[0])) {
             case complaint:
-                return (T) new ComplaintTask(lineValues[1], getDate(lineValues[2]), false);
+                return (T) new ComplaintTask(lineValues[1], getDate(lineValues[2]), IsTaskPrioritized(lineValues[3]));
             case administrative:
-                return (T) new AdministrationTask(lineValues[1], getDate(lineValues[2]), false);
+                return (T) new AdministrationTask(lineValues[1], getDate(lineValues[2]), IsTaskPrioritized(lineValues[3]));
             default:
                 throw new Exception("The task could not be recognized");
         }
@@ -183,6 +185,22 @@ class TaskParser {
             throw new Exception("Date could not be found! Is it possible, that file was damaged meanwhile?");
 
         return date;
+    }
+
+    private boolean IsTaskPrioritized (String _string) throws Exception {
+        String[] POSITIVE_PRIORITY_REGEXES = config.properties.getProperty("POSITIVE_PRIORITY_REGEXES").split(",");
+        String[] NEGATIVE_PRIORITY_REGEXES = config.properties.getProperty("NEGATIVE_PRIORITY_REGEXES").split(",");
+
+        // In case - no string was left after the split
+        if (Objects.equals(_string, "") || _string == null)
+            return false;
+
+        if (RegexUtils.FindMatch(POSITIVE_PRIORITY_REGEXES, _string) != null)
+            return true;
+        if (RegexUtils.FindMatch(NEGATIVE_PRIORITY_REGEXES, _string) != null)
+            return false;
+
+        throw new Exception("The priority could not be recognized from the line!");
     }
 
 }
