@@ -149,9 +149,9 @@ class TaskParser {
 
         switch (getTaskType(lineValues[0])) {
             case complaint:
-                return (T) new ComplaintTask(lineValues[1], new Date(), false);
+                return (T) new ComplaintTask(lineValues[1], getDate(lineValues[2]), false);
             case administrative:
-                return (T) new AdministrationTask(lineValues[1], new Date(), false);
+                return (T) new AdministrationTask(lineValues[1], getDate(lineValues[2]), false);
             default:
                 throw new Exception("The task could not be recognized");
         }
@@ -168,17 +168,21 @@ class TaskParser {
         throw new Exception("Task could not be found!");
     }
 
-    private Date getDate (String _string) {
+    private Date getDate (String _string) throws Exception {
         String[] DATE_FORMAT_LINUX_REGEX = config.properties.getProperty("DATE_FORMAT_LINUX_REGEX").split(",");
         String[] DATE_FORMATS = config.properties.getProperty("DATE_FORMATS").split(",");
 
+        Date date = null;
+
+        date = DateUtils.FindDate(DATE_FORMATS, _string);
+
         if (RegexUtils.IsMatched(DATE_FORMAT_LINUX_REGEX, _string))
-            return new Date(Long.parseLong(_string) * 1000L);
+            date = new Date(Long.parseLong(_string) * 1000L);
 
-        if (RegexUtils.IsMatched(DATE_FORMATS, _string)) {
+        if (date == null)
+            throw new Exception("Date could not be found! Is it possible, that file was damaged meanwhile?");
 
-        }
-        return new Date(Long.parseLong(_string) * 1000L);
+        return date;
     }
 
 }
