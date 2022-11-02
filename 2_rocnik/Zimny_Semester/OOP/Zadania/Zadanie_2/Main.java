@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 import java.util.PriorityQueue;
@@ -139,25 +140,24 @@ class FIKTIVsroSoftware {
 class TaskParser {
     private enum TaskTypes { administrative, complaint}
     private Properties properties = new Properties();
+    private Config config;
+    public TaskParser () throws IOException {
+        config = Config.getConfig();
+    }
     public <T extends FIKTIVTask> T getTaskFromLine (String _line) throws Exception {
-        System.out.println("This is the line " + _line);
-
-        String[] lineValues = _line.split(",");
-
-        System.out.println("This is the task type " + getTaskType(lineValues[0]));
+        String[] lineValues = _line.split(",", -1);
 
         switch (getTaskType(lineValues[0])) {
             case complaint:
-                return (T) new ComplaintTask("", new Date(), false);
+                return (T) new ComplaintTask(lineValues[1], new Date(), false);
             case administrative:
-                return (T) new AdministrationTask("", new Date(), false);
+                return (T) new AdministrationTask(lineValues[1], new Date(), false);
             default:
                 throw new Exception("The task could not be recognized");
         }
     }
 
     private TaskTypes getTaskType (String _string) throws Exception {
-        Config config = Config.getConfig();
         String[] ADMINISTRATIVE_TASK_REGEXES = config.properties.getProperty("ADMINISTRATIVE_TASK_REGEXES").split(",");
         String[] COMPLAINT_TASK_REGEXES = config.properties.getProperty("COMPLAINT_TASK_REGEXES").split(",");
 
@@ -167,6 +167,20 @@ class TaskParser {
             return TaskTypes.complaint;
         throw new Exception("Task could not be found!");
     }
+
+    private Date getDate (String _string) {
+        String[] DATE_FORMAT_LINUX_REGEX = config.properties.getProperty("DATE_FORMAT_LINUX_REGEX").split(",");
+        String[] DATE_FORMATS = config.properties.getProperty("DATE_FORMATS").split(",");
+
+        if (RegexUtils.IsMatched(DATE_FORMAT_LINUX_REGEX, _string))
+            return new Date(Long.parseLong(_string) * 1000L);
+
+        if (RegexUtils.IsMatched(DATE_FORMATS, _string)) {
+
+        }
+        return new Date(Long.parseLong(_string) * 1000L);
+    }
+
 }
 
 class FileUtils {
@@ -192,6 +206,19 @@ class RegexUtils {
     }
 }
 
+class DateUtils {
+    static Date FindDate (String[] _dateFormats, String _string) {
+        Date date = null;
+        for (String dateFormat : _dateFormats) {
+            try {
+                date = new SimpleDateFormat(dateFormat).parse(_string);
+            } catch (Exception ex) {}
+        }
+
+        return date;
+    }
+}
+
 class Config {
     private static Config config_instance = null;
 
@@ -211,7 +238,6 @@ class Config {
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
         FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
     }
 }
