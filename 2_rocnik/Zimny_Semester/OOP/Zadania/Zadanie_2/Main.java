@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.cert.TrustAnchor;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -13,9 +14,10 @@ interface Task {
     public void TakeOverTheTask(); //The task is now being handled by user
     public void SolveTheTask();
     public Date getCreationDate();
+    public boolean isPrioritized();
 }
 
-class FIKTIVTask implements Task {
+class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
     private String Description;
     private Date creationDate;
     private boolean prioritized;
@@ -58,6 +60,11 @@ class FIKTIVTask implements Task {
     public void setDescription(String description) {
         Description = description;
     }
+
+    @Override
+    public int compareTo(FIKTIVTask o) {
+        return getCreationDate().compareTo(o.getCreationDate());
+    }
 }
 
 interface AdministrationTaskInterface {
@@ -73,6 +80,7 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
     }
 
     public void PostponeTask () {
+        //Todo update prioritized
         daysPostponed += 1;
     }
 
@@ -101,17 +109,17 @@ class ComplaintTask extends FIKTIVTask implements ComplaintTaskInterface{
 class TaskComparator implements Comparator<Task>{
     @Override
     public int compare(Task task1, Task task2) {
-        if (task1.getCreationDate().before(task2.getCreationDate()))
-            return 1;
-        else if (task1.getCreationDate().after(task2.getCreationDate()))
-            return -1;
-        return 0;
+
+        int result = task2.getCreationDate().compareTo(task1.getCreationDate());
+        return result;
+
     }
 }
 
 class FIKTIVsroSoftware {
 
     private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
+    private List myList = new ArrayList();
     private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
@@ -130,10 +138,15 @@ class FIKTIVsroSoftware {
         try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                queue.add(parser.getTaskFromLine(line));
+                //Task myTask = parser.getTaskFromLine(line);
+                //queue.add(parser.getTaskFromLine(line));
+                myList.add(parser.getTaskFromLine(line));
             }
 
-            queue.size();
+            myList.size();
+            Collections.sort(myList);
+            myList.size();
+            //queue.size();
         }
     }
 
