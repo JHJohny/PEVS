@@ -63,6 +63,12 @@ class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
 
     @Override
     public int compareTo(FIKTIVTask o) {
+
+        if (isPrioritized() && !o.isPrioritized())
+            return -1;
+        if (!isPrioritized() && o.isPrioritized())
+            return 1;
+
         return getCreationDate().compareTo(o.getCreationDate());
     }
 }
@@ -118,8 +124,8 @@ class TaskComparator implements Comparator<Task>{
 
 class FIKTIVsroSoftware {
 
-    private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
-    private List myList = new ArrayList();
+    //private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
+    private List tasks = new ArrayList();
     private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
@@ -138,15 +144,11 @@ class FIKTIVsroSoftware {
         try (BufferedReader br = new BufferedReader(new FileReader(_filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                //Task myTask = parser.getTaskFromLine(line);
-                //queue.add(parser.getTaskFromLine(line));
-                myList.add(parser.getTaskFromLine(line));
+                tasks.add(parser.getTaskFromLine(line));
             }
 
-            myList.size();
-            Collections.sort(myList);
-            myList.size();
-            //queue.size();
+            Collections.sort(tasks);
+            tasks.size();
         }
     }
 
