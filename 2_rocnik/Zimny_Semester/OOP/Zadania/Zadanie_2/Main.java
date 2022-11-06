@@ -2,11 +2,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.cert.TrustAnchor;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
-import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,18 +121,32 @@ class TaskComparator implements Comparator<Task>{
     }
 }
 
-class FIKTIVsroSoftware {
+interface sroSoftware {
+    public void LoadNewFile (String _filePath) throws Exception;
+    public Task getTaskToWorkOn ();
+}
+
+class FIKTIVsroSoftware implements sroSoftware{
 
     //private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
-    private List tasks = new ArrayList();
+    private List tasks = new ArrayList(); //List is actually better than priority que (in this case)
     private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
         ConsumeTheFile(_filePath);
     }
 
+    public FIKTIVsroSoftware () throws Exception {
+
+    }
+
     public void LoadNewFile (String _filePath) throws Exception {
         ConsumeTheFile(_filePath);
+    }
+
+    @Override
+    public Task getTaskToWorkOn() {
+        return null;
     }
 
     private void ConsumeTheFile (String _filePath) throws Exception {
@@ -146,8 +159,8 @@ class FIKTIVsroSoftware {
             while ((line = br.readLine()) != null) {
                 tasks.add(parser.getTaskFromLine(line));
             }
-
             Collections.sort(tasks);
+
             tasks.size();
         }
     }
@@ -272,8 +285,52 @@ class Config {
     }
 }
 
+class CLIMenu {
+
+    private sroSoftware companySoftware;
+    public CLIMenu (sroSoftware _software) throws Exception {
+        companySoftware = _software;
+        ShowInitialMenu();
+    }
+
+    private void ShowInitialMenu () throws Exception {
+        System.out.println("##############\n # Hello \n # Welcome to XXY");
+        FileConsumeMenu();
+    }
+
+    private void MainMenu () {
+        Task task = companySoftware.getTaskToWorkOn();
+        System.out.println("############################## \n # Here are some options for you \n");
+
+    }
+
+    private void FileConsumeMenu () throws Exception {
+        System.out.println("# Please enter the location of the .csv file");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Filepath");
+        String userInput = scanner.nextLine();
+
+        if (!FileUtils.DoesFileExist(userInput)) {
+            System.out.println("File could not be found!");
+
+            return;
+        }
+
+        if (!userInput.substring(userInput.length() - 4).equals(".csv")) {
+            System.out.println("It's not a .csv file!");
+
+            return;
+        }
+
+        companySoftware.LoadNewFile(userInput);
+        MainMenu();
+    }
+}
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware("test.csv");
+        FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware();
+
+        CLIMenu menu = new CLIMenu(FIKTIV);
     }
 }
