@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.security.cert.TrustAnchor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,7 +13,9 @@ interface Task {
     public Date getCreationDate();
     public boolean isPrioritized();
     public String getTaskFormatted();
+    public String getRawTask();
     public String getDescription();
+    public void setDescription(String description);
 }
 
 abstract class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
@@ -110,6 +109,11 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
     public String getTaskFormatted () {
         return "Task of type: Administration | with the description: " + getDescription() + " | from the date: " + getCreationDate();
     }
+
+    @Override
+    public String getRawTask() {
+        return "administration," + getDescription() + "," + getCreationDate() + "," + isPrioritized();
+    }
 }
 
 interface ComplaintTaskInterface {
@@ -135,6 +139,11 @@ class ComplaintTask extends FIKTIVTask implements ComplaintTaskInterface{
     public String getTaskFormatted () {
         return "Task of type: Complaint | with the description: " + getDescription() + " | from the date: " + getCreationDate();
     }
+
+    @Override
+    public String getRawTask() {
+        return "complain," + getDescription() + "," + getCreationDate() + "," + isPrioritized();
+    }
 }
 
 class TaskComparator implements Comparator<Task>{
@@ -151,13 +160,14 @@ interface sroSoftware {
     public void LoadNewFile (String _filePath) throws Exception;
     public Task getTaskToWorkOn ();
     public void AssignTask(Task task);
+    public void SaveTasks() throws IOException;
 }
 
 class FIKTIVsroSoftware implements sroSoftware{
 
     //private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
     private List<FIKTIVTask> tasks = new ArrayList<>(); //List is actually better than priority que (in this case)
-    private List<Task> solvedTasks = new ArrayList<Task>();
+    private List<Task> finishedTasks = new ArrayList<>(); //Includes closed + solved tasks
     private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
@@ -201,8 +211,10 @@ class FIKTIVsroSoftware implements sroSoftware{
 
             switch (userInput) {
                 case "1":
+                    task.SolveTheTask();
                     tasks.remove(task);
-                    solvedTasks.add(task);
+                    task.setDescription(task.getDescription() + " !!! SOLVED !!!");
+                    finishedTasks.add(task);
                     System.out.println("Success! The task is SOLVED now. >> " + task.getTaskFormatted() + "\n\n");
                     return;
                 case "2":
@@ -214,7 +226,10 @@ class FIKTIVsroSoftware implements sroSoftware{
                     }
                     if (task instanceof ComplaintTask) {
                         ((ComplaintTask) task).CancelTask();
+                        tasks.remove(task);
+                        task.setDescription(task.getDescription() + " !!! CANCELED !!!");
                         System.out.println("Success! The task is CANCELED now. >> " + task.getTaskFormatted() + "\n\n");
+                        finishedTasks.add(task);
                     }
                     return;
                 default:
@@ -225,6 +240,47 @@ class FIKTIVsroSoftware implements sroSoftware{
             }
         }
     }
+
+    //TODO refactor!
+    public void SaveTasks() throws IOException {
+        String finishedTasksFileName = "FinishedTasks_";
+        String leftTaskFileName = "Tasks_";
+        int finishedTaskPostfixIndex = 0;
+        int leftTasksPostfixIndex = 0;
+
+        while (FileUtils.DoesFileExist("./" + finishedTasksFileName + finishedTaskPostfixIndex + ".csv")) {
+            finishedTaskPostfixIndex ++;
+        }
+
+        while (FileUtils.DoesFileExist("./" + leftTaskFileName + leftTasksPostfixIndex + ".csv")) {
+            leftTasksPostfixIndex ++;
+        }
+
+        finishedTasksFileName = finishedTasksFileName + finishedTaskPostfixIndex + ".csv";
+        leftTaskFileName = leftTaskFileName + leftTasksPostfixIndex + ".csv";
+
+        //TODO prerobit!!
+        StringBuilder fileContentFinished = new StringBuilder();
+
+        for (Task task: finishedTasks) {
+            fileContentFinished.append(task.getRawTask()).append("\n");
+        }
+
+        FileWriter myWriter = new FileWriter(finishedTasksFileName);
+        myWriter.write(String.valueOf(fileContentFinished));
+        myWriter.close();
+
+        StringBuilder fileContentLeft = new StringBuilder();
+
+        for (Task task: tasks) {
+            fileContentLeft.append(task.getRawTask()).append("\n");
+        }
+
+        FileWriter myWriterTwo = new FileWriter(leftTaskFileName);
+        myWriterTwo.write(String.valueOf(fileContentLeft));
+        myWriterTwo.close();
+    }
+
 
     private void ConsumeTheFile (String _filePath) throws Exception {
         if (!FileUtils.DoesFileExist(_filePath)) {
@@ -395,7 +451,9 @@ class CLIMenu {
                     break;
                 case "3":
                     System.out.println("#### Exiting ####");
-                    // TODO save the files
+                    companySoftware.SaveTasks();
+                    System.out.println("Bye");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("################################################################");
@@ -435,5 +493,7 @@ public class Main {
         FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware();
 
         CLIMenu menu = new CLIMenu(FIKTIV);
+
+        //TODO once everything is finised - what to do
     }
 }
