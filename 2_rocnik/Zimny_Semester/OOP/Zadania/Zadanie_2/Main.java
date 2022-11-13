@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.cert.TrustAnchor;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -92,14 +93,17 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
     }
 
     public void PostponeTask () {
-        //Todo update prioritized
         daysPostponed += 1;
     }
 
     @Override
     public Date getCreationDate () {
-        //System.out.println("Subclass");
-        return super.getCreationDate(); //TODO do summary
+        Date creationDate = super.getCreationDate();
+        Calendar c = Calendar.getInstance();
+        c.setTime(creationDate);
+        c.add(Calendar.DATE, daysPostponed);
+        creationDate = c.getTime();
+        return creationDate;
     }
 
     @Override
@@ -206,6 +210,7 @@ class FIKTIVsroSoftware implements sroSoftware{
                     if (task instanceof AdministrationTask) {
                         ((AdministrationTask) task).PostponeTask();
                         System.out.println("Success! The task is POSTPONED now by 1 day. >> " + task.getTaskFormatted() + "\n\n");
+                        Collections.sort(tasks);
                     }
                     if (task instanceof ComplaintTask) {
                         ((ComplaintTask) task).CancelTask();
@@ -233,7 +238,6 @@ class FIKTIVsroSoftware implements sroSoftware{
             }
             Collections.sort(tasks);
 
-            tasks.size();
         }
     }
 
@@ -371,33 +375,35 @@ class CLIMenu {
     }
 
     private void MainMenu () throws Exception {
-        Task task = companySoftware.getTaskToWorkOn();
-        System.out.println("### Task - " + task.getTaskFormatted());
-        System.out.println("# Options");
-        System.out.println("# 1. Load an another file");
-        System.out.println("# 2. Assign the task");
-        System.out.println("# 3. Exit the program");
+        while (true) {
+            Task task = companySoftware.getTaskToWorkOn();
+            System.out.println("### Task - " + task.getTaskFormatted());
+            System.out.println("# Options");
+            System.out.println("# 1. Load an another file");
+            System.out.println("# 2. Assign the task");
+            System.out.println("# 3. Exit the program");
 
-        Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine();
+            Scanner scanner = new Scanner(System.in);
+            String userInput = scanner.nextLine();
 
-        switch (userInput){
-            case "1":
-                FileConsumeMenu();
-                break;
-            case "2":
-                companySoftware.AssignTask(task);
-                break;
-            case "3":
-                System.out.println("#### Exiting ####");
-                // TODO save the files
-                break;
-            default:
-                System.out.println("################################################################");
-                System.out.println("#                                                              #");
-                System.out.println("#### Sorry your input was not recognized, please try again. ####");
-                System.out.println("#                                                              #");
-                System.out.println("################################################################");
+            switch (userInput){
+                case "1":
+                    FileConsumeMenu();
+                    break;
+                case "2":
+                    companySoftware.AssignTask(task);
+                    break;
+                case "3":
+                    System.out.println("#### Exiting ####");
+                    // TODO save the files
+                    break;
+                default:
+                    System.out.println("################################################################");
+                    System.out.println("#                                                              #");
+                    System.out.println("#### Sorry your input was not recognized, please try again. ####");
+                    System.out.println("#                                                              #");
+                    System.out.println("################################################################");
+            }
         }
     }
 
