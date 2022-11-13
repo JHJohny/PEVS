@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.security.cert.TrustAnchor;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -10,25 +10,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 interface Task {
-    public void TakeOverTheTask(); //The task is now being handled by user
+    public void AssignTask(); //The task is now being handled by user
     public void SolveTheTask();
     public Date getCreationDate();
     public boolean isPrioritized();
+    public String getTaskFormatted();
+    public String getDescription();
 }
 
-class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
+abstract class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
     private String Description;
     private Date creationDate;
     private boolean prioritized;
+
+    public abstract void AssignTask(); //Each subclaass (particular task) has its own implementation - that's why abstract
 
     public FIKTIVTask (String _description, Date _creationDate, boolean _prioritized) {
         setDescription(_description);
         setCreationDate(_creationDate);
         setPrioritized(_prioritized);
-    }
-
-    public void TakeOverTheTask () {
-        // TODO
     }
 
     public void SolveTheTask () {
@@ -38,6 +38,9 @@ class FIKTIVTask implements Task, Comparable<FIKTIVTask> {
     // ### Getters and setters ### //
     public boolean isPrioritized() {
         return prioritized;
+    }
+    public String getTaskFormatted() {
+        return null;
     }
 
     public void setPrioritized(boolean prioritized) {
@@ -80,6 +83,10 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
 
     private int daysPostponed;
 
+    @Override
+    public void AssignTask() {
+    }
+
     public AdministrationTask(String _description, Date _creationDate, boolean _prioritized) {
         super(_description, _creationDate, _prioritized);
     }
@@ -90,9 +97,14 @@ class AdministrationTask extends FIKTIVTask implements AdministrationTaskInterfa
     }
 
     @Override
-    public Date getCreationDate() {
+    public Date getCreationDate () {
         //System.out.println("Subclass");
         return super.getCreationDate(); //TODO do summary
+    }
+
+    @Override
+    public String getTaskFormatted () {
+        return "Task of type: Administration | with the description: " + getDescription() + " | from the date: " + getCreationDate();
     }
 }
 
@@ -102,12 +114,22 @@ interface ComplaintTaskInterface {
 
 class ComplaintTask extends FIKTIVTask implements ComplaintTaskInterface{
 
+    @Override
+    public void AssignTask() {
+
+    }
+
     public ComplaintTask(String _description, Date _creationDate, boolean _prioritized) {
         super(_description, _creationDate, _prioritized);
     }
 
     public void CancelTask () {
 
+    }
+
+    @Override
+    public String getTaskFormatted () {
+        return "Task of type: Complaint | with the description: " + getDescription() + " | from the date: " + getCreationDate();
     }
 }
 
@@ -124,12 +146,14 @@ class TaskComparator implements Comparator<Task>{
 interface sroSoftware {
     public void LoadNewFile (String _filePath) throws Exception;
     public Task getTaskToWorkOn ();
+    public void AssignTask(Task task);
 }
 
 class FIKTIVsroSoftware implements sroSoftware{
 
     //private PriorityQueue<Task> queue = new PriorityQueue<Task>(new TaskComparator());
-    private List tasks = new ArrayList(); //List is actually better than priority que (in this case)
+    private List<FIKTIVTask> tasks = new ArrayList<>(); //List is actually better than priority que (in this case)
+    private List<Task> solvedTasks = new ArrayList<Task>();
     private TaskParser parser = new TaskParser();
 
     public FIKTIVsroSoftware (String _filePath) throws Exception {
@@ -146,7 +170,55 @@ class FIKTIVsroSoftware implements sroSoftware{
 
     @Override
     public Task getTaskToWorkOn() {
-        return null;
+        return tasks.get(0);
+    }
+
+    @Override
+    public void AssignTask(Task task) {
+        System.out.println("You just assigned the task with the description >>> " + task.getDescription());
+        System.out.println("Here are your options what you can do with the task: ");
+        System.out.println("1. Solve the task ");
+
+        // TODO - make dynamic way how to recognize options for particular task.
+        // Meaning - there could be third kind of task that offers more than 1 additional option
+        // Figure out the way how to dynamically offers user the options
+        if (task instanceof AdministrationTask) {
+            System.out.println("2. Postpone the tasks ");
+        }
+
+        if (task instanceof ComplaintTask) {
+            System.out.println("2. Cancel the task");
+        }
+
+        while (true) {
+            System.out.println("Please enter:");
+            Scanner scanner = new Scanner(System.in);
+            String userInput = scanner.nextLine();
+
+            switch (userInput) {
+                case "1":
+                    tasks.remove(task);
+                    solvedTasks.add(task);
+                    System.out.println("Success! The task is SOLVED now. >> " + task.getTaskFormatted() + "\n\n");
+                    return;
+                case "2":
+                    // TODO make it dynamic an generic
+                    if (task instanceof AdministrationTask) {
+                        ((AdministrationTask) task).PostponeTask();
+                        System.out.println("Success! The task is POSTPONED now by 1 day. >> " + task.getTaskFormatted() + "\n\n");
+                    }
+                    if (task instanceof ComplaintTask) {
+                        ((ComplaintTask) task).CancelTask();
+                        System.out.println("Success! The task is CANCELED now. >> " + task.getTaskFormatted() + "\n\n");
+                    }
+                    return;
+                default:
+                    System.out.println("#####################################################");
+                    System.out.println("Your input could not be recognized! Please try again.");
+                    System.out.println("#####################################################");
+                    break;
+            }
+        }
     }
 
     private void ConsumeTheFile (String _filePath) throws Exception {
@@ -294,14 +366,39 @@ class CLIMenu {
     }
 
     private void ShowInitialMenu () throws Exception {
-        System.out.println("##############\n # Hello \n # Welcome to XXY");
+        System.out.println("##############\n# Hello \n# Welcome to XXY program");
         FileConsumeMenu();
     }
 
-    private void MainMenu () {
+    private void MainMenu () throws Exception {
         Task task = companySoftware.getTaskToWorkOn();
-        System.out.println("############################## \n # Here are some options for you \n");
+        System.out.println("### Task - " + task.getTaskFormatted());
+        System.out.println("# Options");
+        System.out.println("# 1. Load an another file");
+        System.out.println("# 2. Assign the task");
+        System.out.println("# 3. Exit the program");
 
+        Scanner scanner = new Scanner(System.in);
+        String userInput = scanner.nextLine();
+
+        switch (userInput){
+            case "1":
+                FileConsumeMenu();
+                break;
+            case "2":
+                companySoftware.AssignTask(task);
+                break;
+            case "3":
+                System.out.println("#### Exiting ####");
+                // TODO save the files
+                break;
+            default:
+                System.out.println("################################################################");
+                System.out.println("#                                                              #");
+                System.out.println("#### Sorry your input was not recognized, please try again. ####");
+                System.out.println("#                                                              #");
+                System.out.println("################################################################");
+        }
     }
 
     private void FileConsumeMenu () throws Exception {
