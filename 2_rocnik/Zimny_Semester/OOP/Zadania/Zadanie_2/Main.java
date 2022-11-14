@@ -184,7 +184,12 @@ class FIKTIVsroSoftware implements sroSoftware{
 
     @Override
     public Task getTaskToWorkOn() {
-        return tasks.get(0);
+        try {
+            return tasks.get(0);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
+        }
+
     }
 
     @Override
@@ -433,6 +438,13 @@ class CLIMenu {
     private void MainMenu () throws Exception {
         while (true) {
             Task task = companySoftware.getTaskToWorkOn();
+
+            if (task == null) {
+                System.out.println("No tasks left to do - exiting the program");
+                companySoftware.SaveTasks();
+                System.exit(0);
+            }
+
             System.out.println("### Task - " + task.getTaskFormatted());
             System.out.println("# Options");
             System.out.println("# 1. Load an another file");
@@ -493,7 +505,5 @@ public class Main {
         FIKTIVsroSoftware FIKTIV = new FIKTIVsroSoftware();
 
         CLIMenu menu = new CLIMenu(FIKTIV);
-
-        //TODO once everything is finised - what to do
     }
 }
